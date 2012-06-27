@@ -1,0 +1,12 @@
+apply plugin: 'eclipse'
+apply plugin: 'groovy'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    groovy 'org.codehaus.groovy:groovy-all:1.8.6'
+	compile 'com.vaadin:vaadin:6.8.0'
+    testCompile 'org.spockframework:spock-core:0.5-groovy-1.8'
+}
