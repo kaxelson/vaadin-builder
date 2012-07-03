@@ -1,0 +1,6 @@
+apply plugin: 'war'
+
+dependencies {
+	compile project(':vaadin-builder-core')
+	runtime 'com.google.gwt:gwt-user:2.4.0'
+}

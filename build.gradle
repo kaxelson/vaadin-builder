@@ -1,12 +1,17 @@
-apply plugin: 'eclipse'
-apply plugin: 'groovy'
+subprojects {
+	apply plugin: 'eclipse'
+	apply plugin: 'groovy'
 
-repositories {
-    mavenCentral()
-}
+	project.group = 'axelson.vaadin.vaadin-builder'
+	project.version = '0.1.1'
 
-dependencies {
-    groovy 'org.codehaus.groovy:groovy-all:1.8.6'
-	compile 'com.vaadin:vaadin:6.8.0'
-    testCompile 'org.spockframework:spock-core:0.5-groovy-1.8'
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		groovy 'org.codehaus.groovy:groovy-all:1.8.6'
+		compile 'com.vaadin:vaadin:6.8.0'
+		testCompile 'org.spockframework:spock-core:0.5-groovy-1.8'
+	}
 }
