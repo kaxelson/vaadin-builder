@@ -19,6 +19,7 @@ package axelson.vaadin.builder.demo
 import com.vaadin.ui.Component
 
 interface ExampleProvider {
+	String getName()
 	String getCode()
 	String getDocumentation()
 	Component getComponent()

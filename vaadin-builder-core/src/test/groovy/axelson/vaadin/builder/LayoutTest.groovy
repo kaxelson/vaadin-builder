@@ -18,25 +18,27 @@ package axelson.vaadin.builder
 
 import spock.lang.Specification
 
-import com.vaadin.ui.Window
+import com.vaadin.ui.Layout
+import com.vaadin.ui.VerticalLayout
+import com.vaadin.ui.Layout.MarginHandler
 
-class WindowTest extends Specification {
-	def 'can create a new window'() {
+class LayoutTest extends Specification {
+	def 'can create a new verticalLayout'() {
 		when:
-			Window window = new VaadinBuilder().window()
+			VerticalLayout vl = new VaadinBuilder().verticalLayout()
 			
 		then:
-			window && window instanceof Window
+			vl && vl instanceof VerticalLayout
 	}
 	
-	def 'can create a new window with attributes'() {
+	def 'can set margin on layout'() {
 		when:
-			Window window = new VaadinBuilder().window(caption: 'Test Window', positionX: 100, positionY: 100)
+			VerticalLayout vl = new VaadinBuilder().verticalLayout(margin: true)
 			
 		then:
-			window && window instanceof Window
-			window.caption == 'Test Window'
-			window.positionX == 100
-			window.positionY == 100
+			vl && vl instanceof Layout
+			vl instanceof Layout.MarginHandler
+			vl.margin && vl.margin instanceof Layout.MarginInfo
+			vl.margin.hasBottom() && vl.margin.hasLeft() && vl.margin.hasRight() && vl.margin.hasTop()
 	}
 }

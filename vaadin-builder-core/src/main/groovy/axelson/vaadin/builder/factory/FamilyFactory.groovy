@@ -14,29 +14,18 @@
  * the License.
  */
 
-package axelson.vaadin.builder
+package axelson.vaadin.builder.factory
 
-import spock.lang.Specification
-
-import com.vaadin.ui.Window
-
-class WindowTest extends Specification {
-	def 'can create a new window'() {
-		when:
-			Window window = new VaadinBuilder().window()
-			
-		then:
-			window && window instanceof Window
+abstract class FamilyFactory extends ConfiguringFactory {
+	private Class klass
+	
+	FamilyFactory(Class klass) {
+		assert klass != null
+		this.klass = klass
 	}
 	
-	def 'can create a new window with attributes'() {
-		when:
-			Window window = new VaadinBuilder().window(caption: 'Test Window', positionX: 100, positionY: 100)
-			
-		then:
-			window && window instanceof Window
-			window.caption == 'Test Window'
-			window.positionX == 100
-			window.positionY == 100
+	@Override
+	public Class getTargetType() {
+		klass
 	}
 }

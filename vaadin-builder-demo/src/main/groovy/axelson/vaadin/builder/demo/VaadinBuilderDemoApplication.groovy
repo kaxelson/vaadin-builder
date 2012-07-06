@@ -16,10 +16,13 @@
 
 package axelson.vaadin.builder.demo
 
+import axelson.vaadin.builder.demo.example.ButtonExample
+import axelson.vaadin.builder.demo.example.TryItExample
 import axelson.vaadin.builder.demo.example.WindowExample
 
 import com.vaadin.Application
 import com.vaadin.ui.Label
+import com.vaadin.ui.Layout
 import com.vaadin.ui.TabSheet
 import com.vaadin.ui.VerticalLayout
 import com.vaadin.ui.Window
@@ -33,14 +36,18 @@ class VaadinBuilderDemoApplication extends Application {
 		mainWindow.caption = 'VaadinBuilder Demo'
 		ts = new TabSheet()
 		mainWindow.addComponent(ts)
+		addExample(new TryItExample())
+		addExample(new ButtonExample())
 		addExample(new WindowExample())
 	}
 	
 	private void addExample(ExampleProvider ep) {
 		VerticalLayout vl = new VerticalLayout()
+		vl.margin = new Layout.MarginInfo(true)
+		vl.spacing = true
 		vl.addComponent(new Label(ep.code))
 		vl.addComponent(ep.component)
-		ts.addTab(vl, ep.class.name)
+		ts.addTab(vl, ep.name)
 	}
 }
 

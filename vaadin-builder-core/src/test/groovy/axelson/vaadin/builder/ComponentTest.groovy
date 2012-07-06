@@ -18,25 +18,28 @@ package axelson.vaadin.builder
 
 import spock.lang.Specification
 
-import com.vaadin.ui.Window
+import com.vaadin.terminal.Sizeable
+import com.vaadin.ui.TextArea
+import com.vaadin.ui.VerticalLayout
 
-class WindowTest extends Specification {
-	def 'can create a new window'() {
+class ComponentTest extends Specification {
+	def 'can set width on a layout'() {
 		when:
-			Window window = new VaadinBuilder().window()
+			VerticalLayout vl = new VaadinBuilder().verticalLayout(width: '100%')
 			
 		then:
-			window && window instanceof Window
+			vl && vl instanceof Sizeable
+			vl.width == 100
+			vl.widthUnits == Sizeable.UNITS_PERCENTAGE
 	}
 	
-	def 'can create a new window with attributes'() {
+	def 'can set width on a field'() {
 		when:
-			Window window = new VaadinBuilder().window(caption: 'Test Window', positionX: 100, positionY: 100)
+			TextArea ta = new VaadinBuilder().textArea(width: '100%')
 			
 		then:
-			window && window instanceof Window
-			window.caption == 'Test Window'
-			window.positionX == 100
-			window.positionY == 100
+			ta && ta instanceof Sizeable
+			ta.width == 100
+			ta.widthUnits == Sizeable.UNITS_PERCENTAGE
 	}
 }

@@ -21,29 +21,19 @@ import axelson.vaadin.builder.demo.ExampleProvider
 
 import com.vaadin.ui.Button
 import com.vaadin.ui.Component
-import com.vaadin.ui.VerticalLayout
-import com.vaadin.ui.Window
+import com.vaadin.ui.Label
+import com.vaadin.ui.Panel
+import com.vaadin.ui.TextArea
 
-class WindowExample implements ExampleProvider {
+class TryItExample implements ExampleProvider {
 	@Override
 	public String getName() {
-		'Window'
+		'Try It!'
 	}
 
 	@Override
 	public String getCode() {
-'''Button b = new Button('Click for new Window')
-b.addListener([
-	buttonClick: {Button.ClickEvent event ->
-		Window w = new VaadinBuilder().window()
-		vl.application.mainWindow.addWindow(w)
-		w.addListener([
-			windowClose: {Window.CloseEvent e ->
-				vl.application.mainWindow.removeWindow(w)
-			}
-		] as Window.CloseListener)
-	}
-] as Button.ClickListener)'''
+		''
 	}
 
 	@Override
@@ -53,20 +43,28 @@ b.addListener([
 
 	@Override
 	public Component getComponent() {
-		VerticalLayout vl = new VerticalLayout()
-		Button b = new Button('Click for new Window')
-		b.addListener([
-			buttonClick: {Button.ClickEvent event ->
-				Window w = new VaadinBuilder().window(caption: 'Test Window', positionX: 100, positionY: 100)
-				vl.application.mainWindow.addWindow(w)
-				w.addListener([
-					windowClose: {Window.CloseEvent e ->
-						vl.application.mainWindow.removeWindow(w)
+		TextArea ta
+		Panel p
+		Button b
+		new VaadinBuilder().verticalLayout(spacing: true, width: '100%') {
+			ta = textArea(caption: 'Code', width: '100%')
+			b = button(caption: 'Render') {
+				buttonClick {e ->
+					if (ta.value != null) {
+						p.removeAllComponents()
+						try {
+							def result = new GroovyShell().evaluate("new axelson.vaadin.builder.VaadinBuilder().with {${ta.value}}")
+							p.addComponent(result)
+							b.setComponentError(null)
+						} catch (Throwable t) {
+							p.addComponent(new Label(t.message))
+						}
 					}
-				] as Window.CloseListener)
+				}
 			}
-		] as Button.ClickListener)
-		vl.addComponent(b)
-		return vl
+			p = panel(caption: 'Result', width: '100%') {
+				label(value: 'Click Render to display your Vaadin UI')
+			}
+		}
 	}
 }

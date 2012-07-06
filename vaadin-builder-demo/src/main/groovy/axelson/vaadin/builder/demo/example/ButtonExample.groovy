@@ -14,29 +14,31 @@
  * the License.
  */
 
-package axelson.vaadin.builder
+package axelson.vaadin.builder.demo.example
 
-import spock.lang.Specification
+import axelson.vaadin.builder.VaadinBuilder
+import axelson.vaadin.builder.demo.ExampleProvider
 
-import com.vaadin.ui.Window
+import com.vaadin.ui.Component
 
-class WindowTest extends Specification {
-	def 'can create a new window'() {
-		when:
-			Window window = new VaadinBuilder().window()
-			
-		then:
-			window && window instanceof Window
+class ButtonExample implements ExampleProvider {
+	@Override
+	public String getName() {
+		'Button'
 	}
-	
-	def 'can create a new window with attributes'() {
-		when:
-			Window window = new VaadinBuilder().window(caption: 'Test Window', positionX: 100, positionY: 100)
-			
-		then:
-			window && window instanceof Window
-			window.caption == 'Test Window'
-			window.positionX == 100
-			window.positionY == 100
+
+	@Override
+	public String getCode() {
+'''new VaadinBuilder().button(caption: 'Test Button')'''
+	}
+
+	@Override
+	public String getDocumentation() {
+		''
+	}
+
+	@Override
+	public Component getComponent() {
+		new VaadinBuilder().button(caption: 'Test Button')
 	}
 }
