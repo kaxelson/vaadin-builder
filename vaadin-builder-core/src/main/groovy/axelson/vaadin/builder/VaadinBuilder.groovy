@@ -16,15 +16,18 @@
 
 package axelson.vaadin.builder
 
+import axelson.vaadin.builder.factory.ColumnFactory
 import axelson.vaadin.builder.factory.ComponentContainerFactory
 import axelson.vaadin.builder.factory.ComponentFactory
 import axelson.vaadin.builder.factory.FieldFactory
 import axelson.vaadin.builder.factory.FormFactory
+import axelson.vaadin.builder.factory.ItemFactory
 import axelson.vaadin.builder.factory.LayoutFactory
 import axelson.vaadin.builder.factory.ListenerFactory
 import axelson.vaadin.builder.factory.MediaFactory
 import axelson.vaadin.builder.factory.PluggableButtonClickListener
 import axelson.vaadin.builder.factory.SelectFactory
+import axelson.vaadin.builder.factory.TableFactory
 import axelson.vaadin.builder.factory.WindowFactory
 
 import com.vaadin.ui.AbsoluteLayout
@@ -62,7 +65,6 @@ import com.vaadin.ui.RichTextArea
 import com.vaadin.ui.Select
 import com.vaadin.ui.Slider
 import com.vaadin.ui.TabSheet
-import com.vaadin.ui.Table
 import com.vaadin.ui.TextArea
 import com.vaadin.ui.TextField
 import com.vaadin.ui.Tree
@@ -93,7 +95,6 @@ class VaadinBuilder extends FactoryBuilderSupport {
 	public static final Factory NATIVE_SELECT_FACTORY = new SelectFactory(NativeSelect)
 	public static final Factory TWIN_COL_SELECT_FACTORY = new SelectFactory(TwinColSelect)
 	public static final Factory OPTION_GROUP_FACTORY = new SelectFactory(OptionGroup)
-	public static final Factory TABLE_FACTORY = new SelectFactory(Table)
 	public static final Factory TREE_FACTORY = new SelectFactory(Tree)
 	public static final Factory TREE_TABLE_FACTORY = new SelectFactory(TreeTable)
 	
@@ -127,6 +128,11 @@ class VaadinBuilder extends FactoryBuilderSupport {
 	public static final Factory FORM_FACTORY = new FormFactory(Form)
 	
 	public static final Factory WINDOW_FACTORY = new WindowFactory()
+
+	public static final Factory TABLE_FACTORY = new TableFactory()
+	public static final Factory COLUMN_FACTORY = new ColumnFactory()
+	
+	public static final Factory ITEM_FACTORY = new ItemFactory()
 	
 	public static final Factory BUTTON_CLICK_FACTORY = new ListenerFactory(PluggableButtonClickListener)
 	
@@ -154,7 +160,6 @@ class VaadinBuilder extends FactoryBuilderSupport {
 		registerFactory('nativeSelect', NATIVE_SELECT_FACTORY)
 		registerFactory('twinColSelect', TWIN_COL_SELECT_FACTORY)
 		registerFactory('optionGroup', OPTION_GROUP_FACTORY)
-		registerFactory('table', TABLE_FACTORY)
 		registerFactory('tree', TREE_FACTORY)
 		registerFactory('treeTable', TREE_TABLE_FACTORY)
 	}
@@ -198,5 +203,14 @@ class VaadinBuilder extends FactoryBuilderSupport {
 	
 	void registerListeners() {
 		registerFactory('buttonClick', BUTTON_CLICK_FACTORY)
+	}
+	
+	void registerTableNodes() {
+		registerFactory('table', TABLE_FACTORY)
+		registerFactory('column', COLUMN_FACTORY)
+	}
+	
+	void registerDataNodes() {
+		registerFactory('item', ITEM_FACTORY)
 	}
 }

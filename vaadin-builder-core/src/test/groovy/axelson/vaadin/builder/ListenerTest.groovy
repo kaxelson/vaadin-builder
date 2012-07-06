@@ -14,15 +14,27 @@
  * the License.
  */
 
-package axelson.vaadin.builder.factory
+package axelson.vaadin.builder
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import spock.lang.Specification
 
-class SelectFactory extends FieldFactory {
-	private static final Logger logger = LoggerFactory.getLogger(SelectFactory)
-	
-	SelectFactory(Class klass) {
-		super(klass)
+import com.vaadin.ui.Button
+
+class ListenerTest extends Specification {
+	def 'can add a click listener to a button'() {
+		setup:
+			String test = null
+			Button b = new VaadinBuilder().button {
+				buttonClick {e ->
+					test = 'clicked'
+				}
+			}
+			
+		when:
+			b.click()
+			
+		then:
+			b.getListeners(Button.ClickEvent).size() == 1
+			test == 'clicked'
 	}
 }

@@ -47,7 +47,7 @@ class ListenerFactory extends FamilyFactory {
 }
 
 class PluggableListener {
-	Closure strategy
+	Closure strategy = {def e ->}
 }
 
 class PluggableButtonClickListener extends PluggableListener implements Button.ClickListener {

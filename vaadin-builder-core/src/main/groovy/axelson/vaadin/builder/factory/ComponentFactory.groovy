@@ -70,7 +70,7 @@ class ComponentFactory extends FamilyFactory {
 	
 	@Override
 	public void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
-		processNodeChildren(builder, parent, node, nodeChildren(node))
+		processNodeChildren(builder, parent, node, getNodeChildren(node))
 		clearNodeChildren(node)
 		super.onNodeCompleted(builder, parent, node)
 	}
@@ -86,18 +86,18 @@ class ComponentFactory extends FamilyFactory {
 	}
 
 	protected void addNodeChild(Object node, Object child) {
-		nodeChildren[nodeIdentifier(node)] = (nodeChildren[nodeIdentifier(node)] ?: []) << child
+		nodeChildren[getNodeIdentifier(node)] = (nodeChildren[getNodeIdentifier(node)] ?: []) << child
 	}
 	
-	protected List nodeChildren(Object node) {
-		nodeChildren[nodeIdentifier(node)] ?: []
+	protected List getNodeChildren(Object node) {
+		nodeChildren[getNodeIdentifier(node)] ?: []
 	}
 	
 	protected List clearNodeChildren(Object node) {
-		nodeChildren.remove(nodeIdentifier(node))
+		nodeChildren.remove(getNodeIdentifier(node))
 	}
 	
-	protected Object nodeIdentifier(Object node) {
+	protected Object getNodeIdentifier(Object node) {
 		System.identityHashCode(node)
 	}
 }

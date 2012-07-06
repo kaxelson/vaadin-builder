@@ -1,5 +1,7 @@
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+	
 subprojects {
-	apply plugin: 'eclipse'
 	apply plugin: 'groovy'
 
 	project.group = 'axelson.vaadin.vaadin-builder'
