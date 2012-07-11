@@ -19,6 +19,8 @@ package axelson.vaadin.builder.factory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+import axelson.vaadin.builder.factory.ListenerFactory.PluggableListener;
+
 import com.vaadin.terminal.Sizeable
 import com.vaadin.ui.Component
 

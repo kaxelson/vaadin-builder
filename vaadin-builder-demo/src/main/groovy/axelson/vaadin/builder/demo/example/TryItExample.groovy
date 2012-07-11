@@ -43,17 +43,19 @@ class TryItExample implements ExampleProvider {
 
 	@Override
 	public Component getComponent() {
+		TextArea taSetup
 		TextArea ta
 		Panel p
 		Button b
 		new VaadinBuilder().verticalLayout(spacing: true, width: '100%') {
-			ta = textArea(caption: 'Code', width: '100%')
+			taSetup = textArea(caption: 'Setup Code', width: '100%')
+			ta = textArea(caption: 'Builder Code', width: '100%')
 			b = button(caption: 'Render') {
 				buttonClick {e ->
 					if (ta.value != null) {
 						p.removeAllComponents()
 						try {
-							def result = new GroovyShell().evaluate("new axelson.vaadin.builder.VaadinBuilder().with {${ta.value}}")
+							def result = new GroovyShell().evaluate("${taSetup.value ?: ''} \n new axelson.vaadin.builder.VaadinBuilder().with {${ta.value}}")
 							p.addComponent(result)
 							b.setComponentError(null)
 						} catch (Throwable t) {

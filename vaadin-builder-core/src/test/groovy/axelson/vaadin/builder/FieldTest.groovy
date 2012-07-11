@@ -21,52 +21,35 @@ import spock.lang.Specification
 import com.vaadin.ui.Button
 import com.vaadin.ui.CheckBox
 import com.vaadin.ui.DateField
+import com.vaadin.ui.InlineDateField
+import com.vaadin.ui.NativeButton
+import com.vaadin.ui.PasswordField
+import com.vaadin.ui.PopupDateField
+import com.vaadin.ui.ProgressIndicator
 import com.vaadin.ui.RichTextArea
+import com.vaadin.ui.Slider
+import com.vaadin.ui.TextArea
 import com.vaadin.ui.TextField
 
 class FieldTest extends Specification {
-	def 'can create a new Button'() {
+	def 'can create a new Field'(Class type) {
 		when:
-			Button b = new VaadinBuilder().button(caption: 'Test Button')
+			def node = toCamelCase(type.simpleName)
+			def caption = "Test ${node}"
+			def f = new VaadinBuilder()."${node}"(caption: caption)
 			
 		then:
-			b && b instanceof Button
-			b.caption == 'Test Button'
-	}
-
-	def 'can create a new TextField'() {
-		when:
-			TextField f = new VaadinBuilder().textField(caption: 'Test Text Field')
-			
-		then:
-			f && f instanceof TextField
-			f.caption == 'Test Text Field'
+			f && f.class == type
+			f.caption == caption
+		
+		where:
+			type << [Button, NativeButton, CheckBox, DateField, PopupDateField, InlineDateField,
+				RichTextArea, TextField, TextArea, PasswordField, ProgressIndicator, Slider]
 	}
 	
-	def 'can create a new DateField'() {
-		when:
-			DateField f = new VaadinBuilder().dateField(caption: 'Test Date Field')
-			
-		then:
-			f && f instanceof DateField
-			f.caption == 'Test Date Field'
-	}
-
-	def 'can create a new CheckBox'() {
-		when:
-			CheckBox f = new VaadinBuilder().checkBox(caption: 'Test CheckBox')
-			
-		then:
-			f && f instanceof CheckBox
-			f.caption == 'Test CheckBox'
-	}
-
-	def 'can create a new RichTextArea'() {
-		when:
-			RichTextArea f = new VaadinBuilder().richTextArea(caption: 'Test RichTextArea')
-			
-		then:
-			f && f instanceof RichTextArea
-			f.caption == 'Test RichTextArea'
+	private String toCamelCase(String s) {
+		if (s == null) throw new IllegalArgumentException('Cannot convert null String to camel case.')
+		if (s.size() == 0) return s
+		s[0].toLowerCase() + ((s.size() > 1) ? s[1..-1] : '')
 	}
 }

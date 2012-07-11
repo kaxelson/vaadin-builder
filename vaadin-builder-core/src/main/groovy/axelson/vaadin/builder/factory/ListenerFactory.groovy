@@ -16,20 +16,38 @@
 
 package axelson.vaadin.builder.factory
 
-import groovy.lang.Closure;
-import groovy.util.FactoryBuilderSupport;
+import java.lang.reflect.Method
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
-import com.vaadin.ui.Button
-import com.vaadin.ui.Button.ClickEvent;
 
 class ListenerFactory extends FamilyFactory {
 	private static final Logger logger = LoggerFactory.getLogger(ListenerFactory)
 	
 	ListenerFactory(Class klass) {
 		super(klass)
+	}
+	
+	@Override
+	public Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
+		Class listenerType = getTargetType()
+		assert listenerType.isInterface()
+		assert listenerType.methods.size() == 1
+		Method listenerMethod = listenerType.methods[0]
+		assert listenerMethod.parameterTypes.size() == 1
+		Class eventType = listenerMethod.parameterTypes[0]
+		
+		def listenerCode = """
+		class script${System.currentTimeMillis()} implements ${listenerType.name}, axelson.vaadin.builder.factory.ListenerFactory.PluggableListener {
+			Closure strategy
+
+			void ${listenerMethod.name}(${eventType.name} e) {
+				strategy.call(e)
+			}
+		}
+		"""
+		
+		generateClass(listenerCode).newInstance()
 	}
 
 	@Override
@@ -44,15 +62,10 @@ class ListenerFactory extends FamilyFactory {
 		}
 		return false
 	}
-}
-
-class PluggableListener {
-	Closure strategy = {def e ->}
-}
-
-class PluggableButtonClickListener extends PluggableListener implements Button.ClickListener {
-	@Override
-	public void buttonClick(ClickEvent event) {
-		strategy.call(event)
+	
+	private Class generateClass(String code) {
+		new GroovyClassLoader().parseClass(code)
 	}
+	
+	static interface PluggableListener{}
 }

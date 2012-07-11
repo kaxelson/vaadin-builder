@@ -25,7 +25,7 @@ import axelson.vaadin.builder.factory.ItemFactory
 import axelson.vaadin.builder.factory.LayoutFactory
 import axelson.vaadin.builder.factory.ListenerFactory
 import axelson.vaadin.builder.factory.MediaFactory
-import axelson.vaadin.builder.factory.PluggableButtonClickListener
+//import axelson.vaadin.builder.factory.PluggableButtonClickListener
 import axelson.vaadin.builder.factory.SelectFactory
 import axelson.vaadin.builder.factory.TabFactory
 import axelson.vaadin.builder.factory.TabSheetFactory
@@ -137,7 +137,7 @@ class VaadinBuilder extends FactoryBuilderSupport {
 	
 	public static final Factory ITEM_FACTORY = new ItemFactory()
 	
-	public static final Factory BUTTON_CLICK_FACTORY = new ListenerFactory(PluggableButtonClickListener)
+	public static final Factory BUTTON_CLICK_FACTORY = new ListenerFactory(Button.ClickListener)
 	
 	VaadinBuilder(boolean init = true) {
 		super(init)
