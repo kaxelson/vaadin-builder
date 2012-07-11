@@ -18,6 +18,7 @@ package axelson.vaadin.builder
 
 import spock.lang.Specification
 
+import com.vaadin.ui.Label
 import com.vaadin.ui.Window
 
 class WindowTest extends Specification {
@@ -38,5 +39,16 @@ class WindowTest extends Specification {
 			window.caption == 'Test Window'
 			window.positionX == 100
 			window.positionY == 100
+	}
+	
+	def 'can add a component to a window'() {
+		when:
+			Window window = new VaadinBuilder().window {
+				label(value: 'test')
+			}
+			
+		then:
+			window && window instanceof Window
+			window.componentIterator.any {it instanceof Label && it.value == 'test'}
 	}
 }

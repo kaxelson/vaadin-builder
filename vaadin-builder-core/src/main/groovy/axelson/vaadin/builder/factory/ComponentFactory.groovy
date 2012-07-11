@@ -25,7 +25,6 @@ import com.vaadin.ui.Component
 class ComponentFactory extends FamilyFactory {
 	private static final Logger logger = LoggerFactory.getLogger(ComponentFactory)
 	
-	protected Map dynamicAttributes = [:]
 	protected Map nodeChildren = [:]
 	
 	ComponentFactory(Class klass) {

@@ -27,6 +27,8 @@ import axelson.vaadin.builder.factory.ListenerFactory
 import axelson.vaadin.builder.factory.MediaFactory
 import axelson.vaadin.builder.factory.PluggableButtonClickListener
 import axelson.vaadin.builder.factory.SelectFactory
+import axelson.vaadin.builder.factory.TabFactory
+import axelson.vaadin.builder.factory.TabSheetFactory
 import axelson.vaadin.builder.factory.TableFactory
 import axelson.vaadin.builder.factory.WindowFactory
 
@@ -108,8 +110,9 @@ class VaadinBuilder extends FactoryBuilderSupport {
 	public static final Factory VIDEO_FACTORY = new MediaFactory(Video)
 
 	public static final Factory PANEL_FACTORY = new ComponentContainerFactory(Panel)
-	public static final Factory TAB_SHEET_FACTORY = new ComponentContainerFactory(TabSheet)
-	public static final Factory ACCORDION_FACTORY = new ComponentContainerFactory(Accordion)
+	public static final Factory TAB_SHEET_FACTORY = new TabSheetFactory(TabSheet)
+	public static final Factory TAB_FACTORY = new TabFactory()
+	public static final Factory ACCORDION_FACTORY = new TabSheetFactory(Accordion)
 	public static final Factory POPUP_VIEW_FACTORY = new ComponentContainerFactory(PopupView)
 	public static final Factory LOGIN_FORM_FACTORY = new ComponentContainerFactory(LoginForm)
 	public static final Factory CUSTOM_COMPONENT_FACTORY = new ComponentContainerFactory(CustomComponent)
@@ -179,6 +182,7 @@ class VaadinBuilder extends FactoryBuilderSupport {
 	void registerContainers() {
 		registerFactory('panel', PANEL_FACTORY)
 		registerFactory('tabSheet', TAB_SHEET_FACTORY)
+		registerFactory('tab', TAB_FACTORY)
 		registerFactory('accordion', ACCORDION_FACTORY)
 		registerFactory('popupView', POPUP_VIEW_FACTORY)
 		registerFactory('loginForm', LOGIN_FORM_FACTORY)

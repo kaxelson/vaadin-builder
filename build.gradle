@@ -2,6 +2,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 	
 subprojects {
+	apply plugin: 'maven'
 	apply plugin: 'groovy'
 
 	project.group = 'axelson.vaadin.vaadin-builder'

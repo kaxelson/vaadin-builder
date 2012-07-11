@@ -16,11 +16,15 @@
 
 package axelson.vaadin.builder.factory
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 import com.vaadin.ui.Window
 
-class WindowFactory extends AbstractFactory {
-	@Override
-	public Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
-		return new Window()
+class WindowFactory extends ComponentContainerFactory {
+	private static final Logger logger = LoggerFactory.getLogger(WindowFactory)
+	
+	WindowFactory() {
+		super(Window)
 	}
 }
