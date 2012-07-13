@@ -25,31 +25,9 @@ class ListenerFactory extends FamilyFactory {
 	private static final Logger logger = LoggerFactory.getLogger(ListenerFactory)
 	
 	ListenerFactory(Class klass) {
-		super(klass)
+		super(ListenerFactory.generateListener(klass))
 	}
 	
-	@Override
-	public Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
-		Class listenerType = getTargetType()
-		assert listenerType.isInterface()
-		assert listenerType.methods.size() == 1
-		Method listenerMethod = listenerType.methods[0]
-		assert listenerMethod.parameterTypes.size() == 1
-		Class eventType = listenerMethod.parameterTypes[0]
-		
-		def listenerCode = """
-		class script${System.currentTimeMillis()} implements ${listenerType.name}, axelson.vaadin.builder.factory.ListenerFactory.PluggableListener {
-			Closure strategy
-
-			void ${listenerMethod.name}(${eventType.name} e) {
-				strategy.call(e)
-			}
-		}
-		"""
-		
-		generateClass(listenerCode).newInstance()
-	}
-
 	@Override
 	public boolean isHandlesNodeChildren() {
 		return true
@@ -58,14 +36,36 @@ class ListenerFactory extends FamilyFactory {
 	@Override
 	public boolean onNodeChildren(FactoryBuilderSupport builder, Object node, Closure childContent) {
 		if (node instanceof PluggableListener) {
-			node.strategy = childContent
+			PluggableListener listener = node
+			listener.strategy = childContent
 		}
 		return false
 	}
 	
-	private Class generateClass(String code) {
-		new GroovyClassLoader().parseClass(code)
+	static Class generateListener(Class listenerType) {
+		assert listenerType.isInterface()
+		assert listenerType.methods.size() == 1
+		Method listenerMethod = listenerType.methods[0]
+		assert listenerMethod.parameterTypes.size() == 1
+		Class eventType = listenerMethod.parameterTypes[0]
+		
+		def listenerCode = """
+		class ${listenerType.simpleName + System.currentTimeMillis()} extends axelson.vaadin.builder.factory.ListenerFactory.PluggableListener implements ${listenerType.name} {
+			void ${listenerMethod.name}(${eventType.name} e) {
+				onEvent(e)
+			}
+		}
+		"""
+		logger.debug "generating class for: \n $listenerCode"
+		
+		new GroovyClassLoader().parseClass(listenerCode)
 	}
 	
-	static interface PluggableListener{}
+	static abstract class PluggableListener {
+		Closure strategy
+		
+		void onEvent(def e) {
+			strategy.call(e)
+		}
+	}
 }

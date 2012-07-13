@@ -1,0 +1,3 @@
+dependencies {
+	testRuntime 'com.google.gwt:gwt-servlet:2.3.0'
+}

@@ -25,12 +25,17 @@ import axelson.vaadin.builder.factory.ItemFactory
 import axelson.vaadin.builder.factory.LayoutFactory
 import axelson.vaadin.builder.factory.ListenerFactory
 import axelson.vaadin.builder.factory.MediaFactory
-//import axelson.vaadin.builder.factory.PluggableButtonClickListener
 import axelson.vaadin.builder.factory.SelectFactory
 import axelson.vaadin.builder.factory.TabFactory
 import axelson.vaadin.builder.factory.TabSheetFactory
 import axelson.vaadin.builder.factory.TableFactory
 import axelson.vaadin.builder.factory.WindowFactory
+
+import com.vaadin.data.Container
+import com.vaadin.data.Property
+
+import com.vaadin.event.FieldEvents
+import com.vaadin.event.LayoutEvents
 
 import com.vaadin.ui.AbsoluteLayout
 import com.vaadin.ui.Accordion
@@ -137,7 +142,14 @@ class VaadinBuilder extends FactoryBuilderSupport {
 	
 	public static final Factory ITEM_FACTORY = new ItemFactory()
 	
-	public static final Factory BUTTON_CLICK_FACTORY = new ListenerFactory(Button.ClickListener)
+	public static final Factory BUTTON_CLICK_LISTENER_FACTORY = new ListenerFactory(Button.ClickListener)
+	public static final Factory LAYOUT_CLICK_LISTENER_FACTORY = new ListenerFactory(LayoutEvents.LayoutClickListener)
+	public static final Factory BLUR_LISTENER_FACTORY = new ListenerFactory(FieldEvents.BlurListener)
+	public static final Factory FOCUS_LISTENER_FACTORY = new ListenerFactory(FieldEvents.FocusListener)
+	public static final Factory READ_ONLY_STATUS_CHANGE_LISTENER_FACTORY = new ListenerFactory(Property.ReadOnlyStatusChangeListener)
+	public static final Factory VALUE_CHANGE_LISTENER_FACTORY = new ListenerFactory(Property.ValueChangeListener)
+	public static final Factory ITEM_SET_CHANGE_LISTENER_FACTORY = new ListenerFactory(Container.ItemSetChangeListener)
+	public static final Factory PROPERTY_SET_CHANGE_LISTENER_FACTORY = new ListenerFactory(Container.PropertySetChangeListener)
 	
 	VaadinBuilder(boolean init = true) {
 		super(init)
@@ -206,7 +218,14 @@ class VaadinBuilder extends FactoryBuilderSupport {
 	}
 	
 	void registerListeners() {
-		registerFactory('buttonClick', BUTTON_CLICK_FACTORY)
+		registerFactory('buttonClick', BUTTON_CLICK_LISTENER_FACTORY)
+		registerFactory('layoutClick', LAYOUT_CLICK_LISTENER_FACTORY)
+		registerFactory('blur', BLUR_LISTENER_FACTORY)
+		registerFactory('focus', FOCUS_LISTENER_FACTORY)
+		registerFactory('readOnlyStatusChange', READ_ONLY_STATUS_CHANGE_LISTENER_FACTORY)
+		registerFactory('valueChange', VALUE_CHANGE_LISTENER_FACTORY)
+		registerFactory('containerItemSetChange', ITEM_SET_CHANGE_LISTENER_FACTORY)
+		registerFactory('containerPropertySetChange', PROPERTY_SET_CHANGE_LISTENER_FACTORY)
 	}
 	
 	void registerTableNodes() {
