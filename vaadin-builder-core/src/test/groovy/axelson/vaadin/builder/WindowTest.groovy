@@ -18,6 +18,7 @@ package axelson.vaadin.builder
 
 import spock.lang.Specification
 
+import com.vaadin.ui.Button
 import com.vaadin.ui.Label
 import com.vaadin.ui.Window
 
@@ -50,5 +51,52 @@ class WindowTest extends Specification {
 		then:
 			window && window instanceof Window
 			window.componentIterator.any {it instanceof Label && it.value == 'test'}
+	}
+	
+	def 'can add a listener to a window'() {
+		setup:
+			def test
+			Window window = new VaadinBuilder().window {
+				windowClose {e ->
+					test = 'worked'
+				}
+			}
+			
+		when:
+			window.close()
+			
+		then:
+			window.getListeners(Window.CloseEvent).size() == 1
+			test == 'worked'
+	}
+	
+	def 'can add a listener to a popup window'() {
+		setup:
+			Window w
+			Button b
+			List test = []
+			new VaadinBuilder().window {
+				Window pw = current
+				b = button(caption: 'Click for new Window') {
+					buttonClick {Button.ClickEvent event ->
+						w = new VaadinBuilder().window(caption: 'Test Window', positionX: 100, positionY: 100) {
+							windowClose {Window.CloseEvent e ->
+								test << 'worked'
+								pw.removeWindow(e.window)
+							}
+						}
+						pw.addWindow(w)
+					}
+				}
+			}
+			
+		when:
+			b.click()
+			w.close()
+			
+		then:
+			w && w instanceof Window
+			w.getListeners(Window.CloseEvent).size() == 1
+			test[0] == 'worked'
 	}
 }

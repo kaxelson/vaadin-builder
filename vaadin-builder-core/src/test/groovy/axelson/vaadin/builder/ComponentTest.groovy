@@ -42,4 +42,15 @@ class ComponentTest extends Specification {
 			ta.width == 100
 			ta.widthUnits == Sizeable.UNITS_PERCENTAGE
 	}
+	
+	def 'current refers to the enclosing node'() {
+		when:
+			def test
+			VerticalLayout vl = new VaadinBuilder().verticalLayout {
+				test = current
+			}
+			
+		then:
+			test == vl
+	}
 }

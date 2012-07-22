@@ -18,7 +18,7 @@ package axelson.vaadin.builder.demo
 
 import com.vaadin.ui.Component
 
-interface ExampleProvider {
+interface ExampleProvider extends Serializable {
 	String getName()
 	String getCode()
 	String getDocumentation()

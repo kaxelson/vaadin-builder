@@ -31,6 +31,7 @@ class ListenerTest extends Specification {
 			
 		then:
 			l && l instanceof ClickListener
+			l instanceof Serializable
 	}
 	
 	def 'can add a click listener to a button'() {
@@ -65,5 +66,23 @@ class ListenerTest extends Specification {
 		then:
 			l.getListeners(LayoutClickEvent).size() == 1
 			test == 'clicked'
+	}
+	
+	def 'can serialize and deserialize a listener'() {
+		setup:
+			def l = new VaadinBuilder().buttonClick {e -> 'test'}
+			
+		when:
+			def baos = new ByteArrayOutputStream()
+			new ObjectOutputStream(baos) << l
+			def bytes = baos.toByteArray()
+			
+			def bais = new ByteArrayInputStream(bytes)
+			def l2 = new ObjectInputStream(bais).readObject()
+			
+		then:
+			l2.strategy != null
+			l2.strategy() == 'test'
+			l.strategy() == l2.strategy()
 	}
 }

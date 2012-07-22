@@ -16,8 +16,10 @@
 
 package axelson.vaadin.builder.demo.example
 
+import groovy.util.logging.Slf4j
 import axelson.vaadin.builder.VaadinBuilder
 import axelson.vaadin.builder.demo.ExampleProvider
+import axelson.vaadin.builder.factory.listener.Pluggable
 
 import com.vaadin.ui.Button
 import com.vaadin.ui.Component
@@ -25,6 +27,7 @@ import com.vaadin.ui.Label
 import com.vaadin.ui.Panel
 import com.vaadin.ui.TextArea
 
+@Slf4j
 class TryItExample implements ExampleProvider {
 	@Override
 	public String getName() {
@@ -43,13 +46,11 @@ class TryItExample implements ExampleProvider {
 
 	@Override
 	public Component getComponent() {
-		TextArea taSetup
-		TextArea ta
 		Panel p
 		Button b
 		new VaadinBuilder().verticalLayout(spacing: true, width: '100%') {
-			taSetup = textArea(caption: 'Setup Code', width: '100%')
-			ta = textArea(caption: 'Builder Code', width: '100%')
+			TextArea taSetup = textArea(caption: 'Setup Code', width: '100%')
+			TextArea ta = textArea(caption: 'Builder Code', width: '100%')
 			b = button(caption: 'Render') {
 				buttonClick {e ->
 					if (ta.value != null) {
@@ -63,6 +64,11 @@ class TryItExample implements ExampleProvider {
 						}
 					}
 				}
+			}
+			b.getListeners(Button.ClickEvent).with {
+				assert it.size() == 1
+				assert it[0] instanceof Pluggable
+				assert it[0].strategy != null
 			}
 			p = panel(caption: 'Result', width: '100%') {
 				label(value: 'Click Render to display your Vaadin UI')

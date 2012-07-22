@@ -1,1 +1,1 @@
-include 'vaadin-builder-core', 'vaadin-builder-demo'
+include 'vaadin-builder-util', 'vaadin-builder-core', 'vaadin-builder-demo'

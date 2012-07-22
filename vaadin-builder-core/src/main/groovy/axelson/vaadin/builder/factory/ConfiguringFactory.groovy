@@ -16,9 +16,10 @@
 
 package axelson.vaadin.builder.factory
 
-import com.vaadin.ui.Button
+import groovy.util.logging.Slf4j
 
-abstract class ConfiguringFactory extends AbstractFactory {
+@Slf4j
+abstract class ConfiguringFactory extends AbstractFactory implements Serializable {
 	@Override
 	public Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
 		if (value && getTargetType()?.isAssignableFrom(value.class)) {

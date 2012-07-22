@@ -18,24 +18,11 @@ package axelson.vaadin.builder.factory
 
 import groovy.util.logging.Slf4j
 
-import com.vaadin.ui.Component
-import com.vaadin.ui.ComponentContainer
-
 @Slf4j
-class ComponentContainerFactory extends ComponentFactory {
-	ComponentContainerFactory(Class klass) {
-		super(klass)
-	}
-	
+class SimpleComponentFactory extends AbstractFactory {
 	@Override
-	public void processNodeChildren(FactoryBuilderSupport builder, Object parent, Object node, List children) {
-		if (node instanceof ComponentContainer) {
-			children.each {child ->
-				if (child instanceof Component) {
-					node.addComponent(child)
-				}
-			}
-		}
-		super.processNodeChildren(builder, parent, node, children)
+	public Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
+		assert value != null
+		return value
 	}
 }

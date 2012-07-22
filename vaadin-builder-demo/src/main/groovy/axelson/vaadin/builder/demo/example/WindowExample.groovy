@@ -21,7 +21,6 @@ import axelson.vaadin.builder.demo.ExampleProvider
 
 import com.vaadin.ui.Button
 import com.vaadin.ui.Component
-import com.vaadin.ui.VerticalLayout
 import com.vaadin.ui.Window
 
 class WindowExample implements ExampleProvider {
@@ -32,18 +31,22 @@ class WindowExample implements ExampleProvider {
 
 	@Override
 	public String getCode() {
-'''Button b = new Button('Click for new Window')
-b.addListener([
-	buttonClick: {Button.ClickEvent event ->
-		Window w = new VaadinBuilder().window()
-		vl.application.mainWindow.addWindow(w)
-		w.addListener([
-			windowClose: {Window.CloseEvent e ->
-				vl.application.mainWindow.removeWindow(w)
+'''
+verticalLayout {
+	def vl = current
+	button(caption: 'Click for new Window') {
+		buttonClick {Button.ClickEvent event ->
+			Window w = window(caption: 'Test Window', positionX: 100, positionY: 100) {
+				windowClose {Window.CloseEvent e ->
+					println 'closing'
+					vl.application.mainWindow.removeWindow(e.window)
+				}
 			}
-		] as Window.CloseListener)
+			vl.application.mainWindow.addWindow(w)
+		}
 	}
-] as Button.ClickListener)'''
+}
+'''.trim()
 	}
 
 	@Override
@@ -53,20 +56,18 @@ b.addListener([
 
 	@Override
 	public Component getComponent() {
-		VerticalLayout vl = new VerticalLayout()
-		Button b = new Button('Click for new Window')
-		b.addListener([
-			buttonClick: {Button.ClickEvent event ->
-				Window w = new VaadinBuilder().window(caption: 'Test Window', positionX: 100, positionY: 100)
-				vl.application.mainWindow.addWindow(w)
-				w.addListener([
-					windowClose: {Window.CloseEvent e ->
-						vl.application.mainWindow.removeWindow(w)
+		new VaadinBuilder().verticalLayout {
+			def vl = current
+			button(caption: 'Click for new Window') {
+				buttonClick {Button.ClickEvent event ->
+					Window w = new VaadinBuilder().window(caption: 'Test Window', positionX: 100, positionY: 100) {
+						windowClose {Window.CloseEvent e ->
+							vl.application.mainWindow.removeWindow(e.window)
+						}
 					}
-				] as Window.CloseListener)
+					vl.application.mainWindow.addWindow(w)
+				}
 			}
-		] as Button.ClickListener)
-		vl.addComponent(b)
-		return vl
+		}
 	}
 }

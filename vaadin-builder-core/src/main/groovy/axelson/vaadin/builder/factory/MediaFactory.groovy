@@ -16,12 +16,10 @@
 
 package axelson.vaadin.builder.factory
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import groovy.util.logging.Slf4j
 
+@Slf4j
 class MediaFactory extends FamilyFactory {
-	private static final Logger logger = LoggerFactory.getLogger(MediaFactory)
-	
 	MediaFactory(Class klass) {
 		super(klass)
 	}

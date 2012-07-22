@@ -20,7 +20,8 @@ the License.
 
 	<servlet>
 		<servlet-name>VaadinBuilderDemo</servlet-name>
-		<servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
+		<servlet-class>com.vaadin.terminal.gwt.server.GAEApplicationServlet</servlet-class>
+		<!-- <servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class> -->
 		<init-param>
 			<param-name>application</param-name>
 			<param-value>axelson.vaadin.builder.demo.VaadinBuilderDemoApplication</param-value>

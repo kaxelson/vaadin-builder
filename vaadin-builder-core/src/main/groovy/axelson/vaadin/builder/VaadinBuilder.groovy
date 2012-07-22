@@ -23,20 +23,20 @@ import axelson.vaadin.builder.factory.FieldFactory
 import axelson.vaadin.builder.factory.FormFactory
 import axelson.vaadin.builder.factory.ItemFactory
 import axelson.vaadin.builder.factory.LayoutFactory
-import axelson.vaadin.builder.factory.ListenerFactory
 import axelson.vaadin.builder.factory.MediaFactory
 import axelson.vaadin.builder.factory.SelectFactory
+import axelson.vaadin.builder.factory.SimpleComponentFactory
 import axelson.vaadin.builder.factory.TabFactory
 import axelson.vaadin.builder.factory.TabSheetFactory
 import axelson.vaadin.builder.factory.TableFactory
 import axelson.vaadin.builder.factory.WindowFactory
+import axelson.vaadin.builder.factory.listener.ListenerFactory
+import axelson.vaadin.builder.factory.listener.PluggableListeners
 
 import com.vaadin.data.Container
 import com.vaadin.data.Property
-
 import com.vaadin.event.FieldEvents
 import com.vaadin.event.LayoutEvents
-
 import com.vaadin.ui.AbsoluteLayout
 import com.vaadin.ui.Accordion
 import com.vaadin.ui.Audio
@@ -82,7 +82,7 @@ import com.vaadin.ui.VerticalLayout
 import com.vaadin.ui.VerticalSplitPanel
 import com.vaadin.ui.Video
 
-class VaadinBuilder extends FactoryBuilderSupport {
+class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 	public static final Factory BUTTON_FACTORY = new FieldFactory(Button)
 	public static final Factory NATIVE_BUTTON_FACTORY = new FieldFactory(NativeButton)
 	public static final Factory CHECK_BOX_FACTORY = new FieldFactory(CheckBox)
@@ -134,6 +134,8 @@ class VaadinBuilder extends FactoryBuilderSupport {
 	public static final Factory CSS_LAYOUT_FACTORY = new LayoutFactory(CssLayout)
 	
 	public static final Factory FORM_FACTORY = new FormFactory(Form)
+
+	public static final Factory COMPONENT_FACTORY = new SimpleComponentFactory()
 	
 	public static final Factory WINDOW_FACTORY = new WindowFactory()
 
@@ -142,14 +144,15 @@ class VaadinBuilder extends FactoryBuilderSupport {
 	
 	public static final Factory ITEM_FACTORY = new ItemFactory()
 	
-	public static final Factory BUTTON_CLICK_LISTENER_FACTORY = new ListenerFactory(Button.ClickListener)
-	public static final Factory LAYOUT_CLICK_LISTENER_FACTORY = new ListenerFactory(LayoutEvents.LayoutClickListener)
-	public static final Factory BLUR_LISTENER_FACTORY = new ListenerFactory(FieldEvents.BlurListener)
-	public static final Factory FOCUS_LISTENER_FACTORY = new ListenerFactory(FieldEvents.FocusListener)
-	public static final Factory READ_ONLY_STATUS_CHANGE_LISTENER_FACTORY = new ListenerFactory(Property.ReadOnlyStatusChangeListener)
-	public static final Factory VALUE_CHANGE_LISTENER_FACTORY = new ListenerFactory(Property.ValueChangeListener)
-	public static final Factory ITEM_SET_CHANGE_LISTENER_FACTORY = new ListenerFactory(Container.ItemSetChangeListener)
-	public static final Factory PROPERTY_SET_CHANGE_LISTENER_FACTORY = new ListenerFactory(Container.PropertySetChangeListener)
+	public static final Factory BUTTON_CLICK_LISTENER_FACTORY = new ListenerFactory(PluggableListeners.PluggableButtonClickListener)
+	public static final Factory LAYOUT_CLICK_LISTENER_FACTORY = new ListenerFactory(PluggableListeners.PluggableLayoutClickListener)
+	public static final Factory BLUR_LISTENER_FACTORY = new ListenerFactory(PluggableListeners.PluggableBlurListener)
+	public static final Factory FOCUS_LISTENER_FACTORY = new ListenerFactory(PluggableListeners.PluggableFocusListener)
+	public static final Factory READ_ONLY_STATUS_CHANGE_LISTENER_FACTORY = new ListenerFactory(PluggableListeners.PluggableReadOnlyStatusChangeListener)
+	public static final Factory VALUE_CHANGE_LISTENER_FACTORY = new ListenerFactory(PluggableListeners.PluggableValueChangeListener)
+	public static final Factory ITEM_SET_CHANGE_LISTENER_FACTORY = new ListenerFactory(PluggableListeners.PluggableItemSetChangeListener)
+	public static final Factory PROPERTY_SET_CHANGE_LISTENER_FACTORY = new ListenerFactory(PluggableListeners.PluggablePropertySetChangeListener)
+	public static final Factory WINDOW_CLOSE_LISTENER_FACTORY = new ListenerFactory(PluggableListeners.PluggableWindowCloseListener)
 	
 	VaadinBuilder(boolean init = true) {
 		super(init)
@@ -215,6 +218,8 @@ class VaadinBuilder extends FactoryBuilderSupport {
 		registerFactory('video', VIDEO_FACTORY)
 	
 		registerFactory('form', FORM_FACTORY)
+		
+		registerFactory('component', COMPONENT_FACTORY)
 	}
 	
 	void registerListeners() {
@@ -226,6 +231,7 @@ class VaadinBuilder extends FactoryBuilderSupport {
 		registerFactory('valueChange', VALUE_CHANGE_LISTENER_FACTORY)
 		registerFactory('containerItemSetChange', ITEM_SET_CHANGE_LISTENER_FACTORY)
 		registerFactory('containerPropertySetChange', PROPERTY_SET_CHANGE_LISTENER_FACTORY)
+		registerFactory('windowClose', WINDOW_CLOSE_LISTENER_FACTORY)
 	}
 	
 	void registerTableNodes() {

@@ -16,9 +16,7 @@
 
 package axelson.vaadin.builder.factory
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
+import groovy.util.logging.Slf4j
 import axelson.vaadin.builder.factory.TabFactory.Tab
 
 import com.vaadin.terminal.Resource
@@ -26,9 +24,8 @@ import com.vaadin.ui.Component
 import com.vaadin.ui.TabSheet
 import com.vaadin.ui.VerticalLayout
 
+@Slf4j
 class TabSheetFactory extends ComponentContainerFactory {
-	private static final Logger logger = LoggerFactory.getLogger(TabSheetFactory)
-	
 	TabSheetFactory(Class klass) {
 		super(klass)
 	}
@@ -48,9 +45,8 @@ class TabSheetFactory extends ComponentContainerFactory {
 	}
 }
 
+@Slf4j
 class TabFactory extends AbstractFactory {
-	private static final Logger logger = LoggerFactory.getLogger(TabFactory)
-
 	@Override
 	public Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
 		new Tab()

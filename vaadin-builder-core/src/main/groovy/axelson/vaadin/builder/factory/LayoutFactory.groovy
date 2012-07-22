@@ -16,15 +16,13 @@
 
 package axelson.vaadin.builder.factory
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import groovy.util.logging.Slf4j
 
 import com.vaadin.ui.Layout.MarginHandler
 import com.vaadin.ui.Layout.MarginInfo
 
+@Slf4j
 class LayoutFactory extends ComponentContainerFactory {
-	private static final Logger logger = LoggerFactory.getLogger(LayoutFactory)
-	
 	LayoutFactory(Class klass) {
 		super(klass)
 	}
@@ -37,10 +35,10 @@ class LayoutFactory extends ComponentContainerFactory {
 				} else if (margin instanceof MarginInfo) {
 					node.margin = margin
 				} else {
-					logger.warn 'margin ignored, type must be String, Boolean, or MarginInfo'
+					log.warn 'margin ignored, type must be String, Boolean, or MarginInfo'
 				}
 			} else {
-				logger.warn 'margin ignored, node must be a MarginHandler'
+				log.warn 'margin ignored, node must be a MarginHandler'
 			}
 		}
 		super.onHandleNodeAttributes(builder, node, attributes)

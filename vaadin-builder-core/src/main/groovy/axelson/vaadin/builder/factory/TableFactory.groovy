@@ -16,9 +16,7 @@
 
 package axelson.vaadin.builder.factory
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
+import groovy.util.logging.Slf4j
 import axelson.vaadin.builder.factory.ColumnFactory.Column
 import axelson.vaadin.builder.factory.ColumnFactory.PluggableColumnGenerator
 
@@ -27,9 +25,8 @@ import com.vaadin.terminal.Resource
 import com.vaadin.ui.Table
 import com.vaadin.ui.Table.ColumnGenerator
 
+@Slf4j
 class TableFactory extends SelectFactory {
-	private static final Logger logger = LoggerFactory.getLogger(TableFactory)
-	
 	TableFactory() {
 		super(Table)
 	}
@@ -87,9 +84,8 @@ class TableFactory extends SelectFactory {
 	}
 }
 
+@Slf4j
 class ColumnFactory extends AbstractFactory {
-	private static final Logger logger = LoggerFactory.getLogger(ColumnFactory)
-	
 	@Override
 	public Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
 		new Column()

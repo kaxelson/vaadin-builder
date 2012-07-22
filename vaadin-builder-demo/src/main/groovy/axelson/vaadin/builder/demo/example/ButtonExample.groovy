@@ -29,7 +29,7 @@ class ButtonExample implements ExampleProvider {
 
 	@Override
 	public String getCode() {
-'''new VaadinBuilder().button(caption: 'Test Button')'''
+		'''button(caption: 'Clicking this button will do nothing')'''
 	}
 
 	@Override
@@ -39,6 +39,6 @@ class ButtonExample implements ExampleProvider {
 
 	@Override
 	public Component getComponent() {
-		new VaadinBuilder().button(caption: 'Test Button')
+		new VaadinBuilder().button(caption: 'Clicking this button will do nothing')
 	}
 }

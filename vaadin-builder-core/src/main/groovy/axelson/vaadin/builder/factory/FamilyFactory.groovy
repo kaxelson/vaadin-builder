@@ -16,6 +16,9 @@
 
 package axelson.vaadin.builder.factory
 
+import groovy.util.logging.Slf4j
+
+@Slf4j
 abstract class FamilyFactory extends ConfiguringFactory {
 	private Class klass
 	

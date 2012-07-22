@@ -14,28 +14,29 @@
  * the License.
  */
 
-package axelson.vaadin.builder.factory
+package axelson.vaadin.builder.factory.listener
 
 import groovy.util.logging.Slf4j
-
-import com.vaadin.ui.Component
-import com.vaadin.ui.ComponentContainer
+import axelson.vaadin.builder.factory.FamilyFactory
 
 @Slf4j
-class ComponentContainerFactory extends ComponentFactory {
-	ComponentContainerFactory(Class klass) {
+class ListenerFactory extends FamilyFactory {
+	ListenerFactory(Class klass) {
 		super(klass)
 	}
 	
 	@Override
-	public void processNodeChildren(FactoryBuilderSupport builder, Object parent, Object node, List children) {
-		if (node instanceof ComponentContainer) {
-			children.each {child ->
-				if (child instanceof Component) {
-					node.addComponent(child)
-				}
-			}
+	public boolean isHandlesNodeChildren() {
+		return true
+	}
+
+	@Override
+	public boolean onNodeChildren(FactoryBuilderSupport builder, Object node, Closure childContent) {
+		if (node instanceof Pluggable) {
+			Pluggable listener = node
+//			listener.strategy = childContent
+			listener.strategy = childContent.dehydrate() //need to call dehydrate() to make sure closure is serializable
 		}
-		super.processNodeChildren(builder, parent, node, children)
+		return false
 	}
 }

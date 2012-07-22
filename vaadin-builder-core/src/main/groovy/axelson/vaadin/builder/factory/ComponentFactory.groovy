@@ -16,17 +16,14 @@
 
 package axelson.vaadin.builder.factory
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
-import axelson.vaadin.builder.factory.ListenerFactory.PluggableListener;
+import groovy.util.logging.Slf4j
+import axelson.vaadin.builder.factory.listener.Pluggable
 
 import com.vaadin.terminal.Sizeable
 import com.vaadin.ui.Component
 
+@Slf4j
 class ComponentFactory extends FamilyFactory {
-	private static final Logger logger = LoggerFactory.getLogger(ComponentFactory)
-	
 	protected Map nodeChildren = [:]
 	
 	ComponentFactory(Class klass) {
@@ -41,10 +38,10 @@ class ComponentFactory extends FamilyFactory {
 				} else if (width instanceof Number) {
 					node.setWidth(width as float)
 				} else {
-					logger.warn 'width ignored, type must be String or Number'
+					log.warn 'width ignored, type must be String or Number'
 				}
 			} else {
-				logger.warn 'width ignored, node must be a Sizable'
+				log.warn 'width ignored, node must be a Sizable'
 			}
 		}
 		attributes.remove('height')?.with {height ->
@@ -54,10 +51,10 @@ class ComponentFactory extends FamilyFactory {
 				} else if (height instanceof Number) {
 					node.setHeight(height as float)
 				} else {
-					logger.warn 'height ignored, type must be String or Number'
+					log.warn 'height ignored, type must be String or Number'
 				}
 			} else {
-				logger.warn 'height ignored, node must be a Sizable'
+				log.warn 'height ignored, node must be a Sizable'
 			}
 		}
 		super.onHandleNodeAttributes(builder, node, attributes)
@@ -79,7 +76,8 @@ class ComponentFactory extends FamilyFactory {
 	public void processNodeChildren(FactoryBuilderSupport builder, Object parent, Object node, List children) {
 		if (node instanceof Component) {
 			children.each {child ->
-				if (child instanceof PluggableListener) {
+				if (child instanceof Pluggable) {
+					log.info 'adding Pluggable[{}] to Component[{}]', child, node
 					node.addListener(child)
 				}
 			}

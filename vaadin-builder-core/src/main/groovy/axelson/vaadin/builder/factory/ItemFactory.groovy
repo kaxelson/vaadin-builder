@@ -16,19 +16,13 @@
 
 package axelson.vaadin.builder.factory
 
-import java.util.Hashtable.ValueCollection;
-
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import groovy.util.logging.Slf4j
 
 import com.vaadin.data.Item
 import com.vaadin.data.Property
-import com.vaadin.data.Property.ConversionException;
-import com.vaadin.data.Property.ReadOnlyException;
 
+@Slf4j
 class ItemFactory extends AbstractFactory {
-	private static final Logger logger = LoggerFactory.getLogger(ItemFactory)
-	
 	@Override
 	public Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
 		new GenericItem()

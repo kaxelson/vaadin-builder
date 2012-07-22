@@ -1,3 +1,5 @@
 dependencies {
+	compile project(':vaadin-builder-util')
+	
 	testRuntime 'com.google.gwt:gwt-servlet:2.3.0'
 }

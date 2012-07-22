@@ -16,38 +16,36 @@
 
 package axelson.vaadin.builder.demo
 
+import axelson.vaadin.builder.VaadinBuilder
 import axelson.vaadin.builder.demo.example.ButtonExample
 import axelson.vaadin.builder.demo.example.TryItExample
 import axelson.vaadin.builder.demo.example.WindowExample
 
 import com.vaadin.Application
-import com.vaadin.ui.Label
-import com.vaadin.ui.Layout
-import com.vaadin.ui.TabSheet
-import com.vaadin.ui.VerticalLayout
 import com.vaadin.ui.Window
 
 class VaadinBuilderDemoApplication extends Application {
-	private TabSheet ts
+	static final long serialVersionUID = 1L
+	
+	def examples = [
+		new TryItExample(),
+		new ButtonExample(),
+		new WindowExample()
+	]
 	
 	@Override
 	void init() {
-		mainWindow = new Window()
-		mainWindow.caption = 'VaadinBuilder Demo'
-		ts = new TabSheet()
-		mainWindow.addComponent(ts)
-		addExample(new TryItExample())
-		addExample(new ButtonExample())
-		addExample(new WindowExample())
-	}
-	
-	private void addExample(ExampleProvider ep) {
-		VerticalLayout vl = new VerticalLayout()
-		vl.margin = new Layout.MarginInfo(true)
-		vl.spacing = true
-		vl.addComponent(new Label(ep.code))
-		vl.addComponent(ep.component)
-		ts.addTab(vl, ep.name)
+		mainWindow = new VaadinBuilder().window(caption: 'VaadinBuilder Demo') {
+			tabSheet {
+				this.examples.each {example ->
+					tab(caption: example.name) {
+						verticalLayout(margin: true, spacing: true) {
+							label(value: example.code)
+							component(example.component)
+						}
+					}
+				}
+			}
+		}
 	}
 }
-

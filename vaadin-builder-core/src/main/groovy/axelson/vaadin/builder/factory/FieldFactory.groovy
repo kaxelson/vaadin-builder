@@ -16,12 +16,13 @@
 
 package axelson.vaadin.builder.factory
 
+import groovy.util.logging.Slf4j
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+@Slf4j
 class FieldFactory extends ComponentFactory {
-	private static final Logger logger = LoggerFactory.getLogger(FieldFactory)
-	
 	FieldFactory(Class klass) {
 		super(klass)
 	}
