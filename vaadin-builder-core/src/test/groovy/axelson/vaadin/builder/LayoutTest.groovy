@@ -18,7 +18,9 @@ package axelson.vaadin.builder
 
 import spock.lang.Specification
 
+import com.vaadin.ui.HorizontalLayout
 import com.vaadin.ui.Layout
+import com.vaadin.ui.TextArea
 import com.vaadin.ui.VerticalLayout
 import com.vaadin.ui.Layout.MarginHandler
 
@@ -29,6 +31,23 @@ class LayoutTest extends Specification {
 			
 		then:
 			vl && vl instanceof VerticalLayout
+	}
+	
+	def 'can set expand ratio'() {
+		when:
+			TextArea ta1
+			TextArea ta2
+			HorizontalLayout hl = new VaadinBuilder().horizontalLayout(width: '100%') {
+				ta1 = textArea(expandRatio: 1)
+				ta2 = textArea(expandRatio: 2)
+			}
+			
+		then:
+			hl && hl instanceof Layout
+			ta1 && ta1 instanceof TextArea
+			ta2 && ta2 instanceof TextArea
+			hl.getExpandRatio(ta1) == 1
+			hl.getExpandRatio(ta2) == 2
 	}
 	
 	def 'can set margin on layout'() {

@@ -3,6 +3,10 @@ vaadin-builder
 
 A Groovy Builder (DSL) for constructing Vaadin UIs
 
+Please visit the demo site at http://vaadinbuilder.appspot.com/
+
+Please note that this code is still in alpha and, as such, the api may change before final release.
+
 **************
 Copyright 2012 Knute G. Axelson
 

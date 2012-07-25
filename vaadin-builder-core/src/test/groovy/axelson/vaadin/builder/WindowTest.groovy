@@ -21,6 +21,7 @@ import spock.lang.Specification
 import com.vaadin.ui.Button
 import com.vaadin.ui.Label
 import com.vaadin.ui.Window
+import com.vaadin.ui.Layout.MarginInfo
 
 class WindowTest extends Specification {
 	def 'can create a new window'() {
@@ -98,5 +99,14 @@ class WindowTest extends Specification {
 			w && w instanceof Window
 			w.getListeners(Window.CloseEvent).size() == 1
 			test[0] == 'worked'
+	}
+	
+	def 'can set spacing and margin on a window'() {
+		when:
+			Window window = new VaadinBuilder().window(spacing: true, margin: true)
+			
+		then:
+			window.layout.margin == new MarginInfo(true)
+			window.layout.spacing == true
 	}
 }

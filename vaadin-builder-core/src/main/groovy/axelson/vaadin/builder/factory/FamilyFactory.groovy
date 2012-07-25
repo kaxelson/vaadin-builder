@@ -20,7 +20,7 @@ import groovy.util.logging.Slf4j
 
 @Slf4j
 abstract class FamilyFactory extends ConfiguringFactory {
-	private Class klass
+	protected Class klass
 	
 	FamilyFactory(Class klass) {
 		assert klass != null

@@ -20,6 +20,7 @@ import groovy.util.logging.Slf4j
 import axelson.vaadin.builder.factory.listener.Pluggable
 
 import com.vaadin.terminal.Sizeable
+import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Component
 
 @Slf4j
@@ -55,6 +56,14 @@ class ComponentFactory extends FamilyFactory {
 				}
 			} else {
 				log.warn 'height ignored, node must be a Sizable'
+			}
+		}
+		attributes.remove('expandRatio')?.with {expandRatio ->
+			// at this point builder.current points to the parent of this node
+			if (builder.current instanceof AbstractOrderedLayout) {
+				builder.parentFactory.addNodeChild(builder.current, new ExpandRatio(component: node, expandRatio: expandRatio as float))
+			} else {
+				log.warn 'expandRatio ignored, parent must be an AbstractOrderedLayout'
 			}
 		}
 		super.onHandleNodeAttributes(builder, node, attributes)
@@ -98,5 +107,10 @@ class ComponentFactory extends FamilyFactory {
 	
 	protected Object getNodeIdentifier(Object node) {
 		System.identityHashCode(node)
+	}
+	
+	static class ExpandRatio {
+		Component component
+		float expandRatio
 	}
 }

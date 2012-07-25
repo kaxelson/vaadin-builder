@@ -21,8 +21,12 @@ import groovy.util.logging.Slf4j
 import com.vaadin.ui.Window
 
 @Slf4j
-class WindowFactory extends ComponentContainerFactory {
+class WindowFactory extends PanelFactory {
 	WindowFactory() {
-		super(Window)
+		this(Window)
+	}
+	
+	protected WindowFactory(Class klass) {
+		super(klass)
 	}
 }
