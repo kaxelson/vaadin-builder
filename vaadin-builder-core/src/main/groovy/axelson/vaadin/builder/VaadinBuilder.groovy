@@ -21,10 +21,12 @@ import axelson.vaadin.builder.factory.ComponentContainerFactory
 import axelson.vaadin.builder.factory.ComponentFactory
 import axelson.vaadin.builder.factory.FieldFactory
 import axelson.vaadin.builder.factory.FormFactory
-//import axelson.vaadin.builder.factory.FormFieldFactory
 import axelson.vaadin.builder.factory.ItemFactory
 import axelson.vaadin.builder.factory.LayoutFactory
 import axelson.vaadin.builder.factory.MediaFactory
+import axelson.vaadin.builder.factory.MenuBarFactory
+import axelson.vaadin.builder.factory.MenuItemFactory
+import axelson.vaadin.builder.factory.MenuSeparatorFactory
 import axelson.vaadin.builder.factory.SelectFactory
 import axelson.vaadin.builder.factory.SimpleComponentFactory
 import axelson.vaadin.builder.factory.TabFactory
@@ -34,10 +36,6 @@ import axelson.vaadin.builder.factory.WindowFactory
 import axelson.vaadin.builder.factory.listener.ListenerFactory
 import axelson.vaadin.builder.factory.listener.PluggableListeners
 
-import com.vaadin.data.Container
-import com.vaadin.data.Property
-import com.vaadin.event.FieldEvents
-import com.vaadin.event.LayoutEvents
 import com.vaadin.ui.AbsoluteLayout
 import com.vaadin.ui.Accordion
 import com.vaadin.ui.Audio
@@ -50,7 +48,6 @@ import com.vaadin.ui.CustomLayout
 import com.vaadin.ui.DateField
 import com.vaadin.ui.DragAndDropWrapper
 import com.vaadin.ui.Embedded
-import com.vaadin.ui.Form
 import com.vaadin.ui.FormLayout
 import com.vaadin.ui.GridLayout
 import com.vaadin.ui.HorizontalLayout
@@ -60,7 +57,6 @@ import com.vaadin.ui.Label
 import com.vaadin.ui.Link
 import com.vaadin.ui.ListSelect
 import com.vaadin.ui.LoginForm
-import com.vaadin.ui.MenuBar
 import com.vaadin.ui.NativeButton
 import com.vaadin.ui.NativeSelect
 import com.vaadin.ui.OptionGroup
@@ -109,7 +105,6 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 	public static final Factory EMBEDDED_FACTORY = new ComponentFactory(Embedded)
 	public static final Factory LINK_FACTORY = new ComponentFactory(Link)
 	public static final Factory LABEL_FACTORY = new ComponentFactory(Label)
-	public static final Factory MENU_BAR_FACTORY = new ComponentFactory(MenuBar)
 	public static final Factory UPLOAD_FACTORY = new ComponentFactory(Upload)
 
 	public static final Factory AUDIO_FACTORY = new MediaFactory(Audio)
@@ -134,8 +129,11 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 	public static final Factory VERTICAL_LAYOUT_FACTORY = new LayoutFactory(VerticalLayout)
 	public static final Factory CSS_LAYOUT_FACTORY = new LayoutFactory(CssLayout)
 
+	public static final Factory MENU_BAR_FACTORY = new MenuBarFactory()
+	public static final Factory MENU_ITEM_FACTORY = new MenuItemFactory()
+	public static final Factory MENU_SEPARATOR_FACTORY = new MenuSeparatorFactory()
+
 	public static final Factory FORM_FACTORY = new FormFactory()
-//	public static final Factory FORM_FIELD_FACTORY = new FormFieldFactory()
 
 	public static final Factory COMPONENT_FACTORY = new SimpleComponentFactory()
 
@@ -237,7 +235,6 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		registerFactory('embedded', EMBEDDED_FACTORY)
 		registerFactory('link', LINK_FACTORY)
 		registerFactory('label', LABEL_FACTORY)
-		registerFactory('menuBar', MENU_BAR_FACTORY)
 		registerFactory('upload', UPLOAD_FACTORY)
 
 		registerFactory('audio', AUDIO_FACTORY)
@@ -282,9 +279,14 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		registerFactory('updateProgress', UPLOAD_PROGRESS_LISTENER_FACTORY)
 	}
 
+	void registerMenuNodes() {
+		registerFactory('menuBar', MENU_BAR_FACTORY)
+		registerFactory('menuItem', MENU_ITEM_FACTORY)
+		registerFactory('menuSeparator', MENU_SEPARATOR_FACTORY)
+	}
+
 	void registerFormNodes() {
 		registerFactory('form', FORM_FACTORY)
-		//registerFactory('field', FORM_FIELD_FACTORY)
 	}
 
 	void registerTableNodes() {
