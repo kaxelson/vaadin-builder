@@ -18,9 +18,86 @@ package axelson.vaadin.builder.factory
 
 import groovy.util.logging.Slf4j
 
+import com.vaadin.data.Item
+import com.vaadin.ui.Component
+import com.vaadin.ui.ComponentContainer
+import com.vaadin.ui.Field
+import com.vaadin.ui.Form
+import com.vaadin.ui.FormFieldFactory
+
 @Slf4j
-class FormFactory extends FamilyFactory {
-	FormFactory(Class klass) {
-		super(klass)
+class FormFactory extends ChildDeferringFactory {
+	FormFactory() {
+		super(Form)
+	}
+
+	@Override
+	public void processNodeChildren(FactoryBuilderSupport builder, Object parent, Object node, List children) {
+		super.processNodeChildren(builder, parent, node, children)
+		if (node instanceof Form) {
+			Form form = node
+			getFormFieldsRecursive(children).with {fields ->
+				if (fields.size() > 0) {
+					form.formFieldFactory = new CustomFormFieldFactory(fields: fields)
+				}
+			}
+		}
+	}
+
+	@Override
+	public void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
+		super.onNodeCompleted(builder, parent, node)
+		if (node instanceof Form) {
+			Form form = node
+			if (form.itemDataSource) {
+				form.itemDataSource = form.itemDataSource
+			}
+		}
+	}
+
+	private List getFormFieldsRecursive(List nodes) {
+		List fields = []
+		nodes.each {node ->
+			if (node instanceof Field) {
+				Field field = node
+				if (field.propertyDataSource && field.propertyDataSource instanceof FieldFactory.FormFieldPropertyWrapper) {
+					fields << field
+				}
+			} else if (node instanceof ComponentContainer) {
+				ComponentContainer cc = node
+				fields.addAll(getFormFieldsRecursive(cc.componentIterator.toList()))
+			}
+		}
+		return fields
+	}
+
+	static class CustomFormFieldFactory implements FormFieldFactory {
+		List fields
+
+		public Field createField(Item item, Object propertyId, Component uiContext) {
+			fields.find {it.propertyDataSource.formPropertyId == propertyId}
+		}
 	}
 }
+
+//@Slf4j
+//class FormFieldFactory extends AbstractFactory {
+//	@Override
+//	public Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
+//		return new Field()
+//	}
+//
+//	@Override
+//	public void setChild(FactoryBuilderSupport builder, Object parent, Object child) {
+//		super.setChild(builder, parent, child)
+//		if (parent instanceof Field && child instanceof com.vaadin.ui.Field) {
+//			Field field = parent
+//			field.field = child
+//		}
+//	}
+//
+//	static class Field {
+//		String name
+//		com.vaadin.ui.Field field
+//	}
+//}

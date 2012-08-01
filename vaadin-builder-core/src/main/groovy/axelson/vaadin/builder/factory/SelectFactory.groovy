@@ -18,9 +18,28 @@ package axelson.vaadin.builder.factory
 
 import groovy.util.logging.Slf4j
 
+import com.vaadin.data.Container
+import com.vaadin.data.util.IndexedContainer
+import com.vaadin.ui.AbstractSelect
+
 @Slf4j
 class SelectFactory extends FieldFactory {
 	SelectFactory(Class klass) {
 		super(klass)
+	}
+
+	@Override
+	public boolean onHandleNodeAttributes(FactoryBuilderSupport builder, Object node, Map attributes) {
+		if (node instanceof AbstractSelect) {
+			AbstractSelect select = node
+			attributes.remove('options')?.with {options ->
+				final Container c = new IndexedContainer();
+				options.each {o ->
+					c.addItem(o)
+				}
+				select.containerDataSource = c
+			}
+		}
+		return super.onHandleNodeAttributes(builder, node, attributes)
 	}
 }

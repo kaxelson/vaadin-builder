@@ -21,6 +21,7 @@ import axelson.vaadin.builder.factory.ComponentContainerFactory
 import axelson.vaadin.builder.factory.ComponentFactory
 import axelson.vaadin.builder.factory.FieldFactory
 import axelson.vaadin.builder.factory.FormFactory
+//import axelson.vaadin.builder.factory.FormFieldFactory
 import axelson.vaadin.builder.factory.ItemFactory
 import axelson.vaadin.builder.factory.LayoutFactory
 import axelson.vaadin.builder.factory.MediaFactory
@@ -95,7 +96,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 	public static final Factory PASSWORD_FIELD_FACTORY = new FieldFactory(PasswordField)
 	public static final Factory PROGRESS_INDICATOR_FACTORY = new FieldFactory(ProgressIndicator)
 	public static final Factory SLIDER_FACTORY = new FieldFactory(Slider)
-	
+
 	public static final Factory SELECT_FACTORY = new SelectFactory(Select)
 	public static final Factory COMBO_BOX_FACTORY = new SelectFactory(ComboBox)
 	public static final Factory LIST_SELECT_FACTORY = new SelectFactory(ListSelect)
@@ -104,13 +105,13 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 	public static final Factory OPTION_GROUP_FACTORY = new SelectFactory(OptionGroup)
 	public static final Factory TREE_FACTORY = new SelectFactory(Tree)
 	public static final Factory TREE_TABLE_FACTORY = new SelectFactory(TreeTable)
-	
+
 	public static final Factory EMBEDDED_FACTORY = new ComponentFactory(Embedded)
 	public static final Factory LINK_FACTORY = new ComponentFactory(Link)
 	public static final Factory LABEL_FACTORY = new ComponentFactory(Label)
 	public static final Factory MENU_BAR_FACTORY = new ComponentFactory(MenuBar)
 	public static final Factory UPLOAD_FACTORY = new ComponentFactory(Upload)
-	
+
 	public static final Factory AUDIO_FACTORY = new MediaFactory(Audio)
 	public static final Factory VIDEO_FACTORY = new MediaFactory(Video)
 
@@ -122,7 +123,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 	public static final Factory LOGIN_FORM_FACTORY = new ComponentContainerFactory(LoginForm)
 	public static final Factory CUSTOM_COMPONENT_FACTORY = new ComponentContainerFactory(CustomComponent)
 	public static final Factory DRAG_AND_DROP_WRAPPER_FACTORY = new ComponentContainerFactory(DragAndDropWrapper)
-	
+
 	public static final Factory ABSOLUTE_LAYOUT_FACTORY = new LayoutFactory(AbsoluteLayout)
 	public static final Factory GRID_LAYOUT_FACTORY = new LayoutFactory(GridLayout)
 	public static final Factory HORIZONTAL_SPLIT_PANEL_FACTORY = new LayoutFactory(HorizontalSplitPanel)
@@ -132,18 +133,19 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 	public static final Factory HORIZONTAL_LAYOUT_FACTORY = new LayoutFactory(HorizontalLayout)
 	public static final Factory VERTICAL_LAYOUT_FACTORY = new LayoutFactory(VerticalLayout)
 	public static final Factory CSS_LAYOUT_FACTORY = new LayoutFactory(CssLayout)
-	
-	public static final Factory FORM_FACTORY = new FormFactory(Form)
+
+	public static final Factory FORM_FACTORY = new FormFactory()
+//	public static final Factory FORM_FIELD_FACTORY = new FormFieldFactory()
 
 	public static final Factory COMPONENT_FACTORY = new SimpleComponentFactory()
-	
+
 	public static final Factory WINDOW_FACTORY = new WindowFactory()
 
 	public static final Factory TABLE_FACTORY = new TableFactory()
 	public static final Factory COLUMN_FACTORY = new ColumnFactory()
-	
+
 	public static final Factory ITEM_FACTORY = new ItemFactory()
-	
+
 	public static final Factory BUTTON_CLICK_LISTENER_FACTORY = new ListenerFactory(PluggableListeners.PluggableButtonClickListener)
 	public static final Factory LAYOUT_CLICK_LISTENER_FACTORY = new ListenerFactory(PluggableListeners.PluggableLayoutClickListener)
 	public static final Factory BLUR_LISTENER_FACTORY = new ListenerFactory(PluggableListeners.PluggableBlurListener)
@@ -177,11 +179,11 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 	public static final Factory COMPONENT_LISTENER_FACTORY = new ListenerFactory(PluggableListeners.PluggableComponentListener)
 	public static final Factory FRAGMENT_CHANGE_LISTENER_FACTORY = new ListenerFactory(PluggableListeners.PluggableFragmentChangedListener)
 	public static final Factory UPLOAD_PROGRESS_LISTENER_FACTORY = new ListenerFactory(PluggableListeners.PluggableUploadProgressListener)
-	
+
 	VaadinBuilder(boolean init = true) {
 		super(init)
 	}
-	
+
 	void registerFields() {
 		registerFactory('button', BUTTON_FACTORY)
 		registerFactory('nativeButton', NATIVE_BUTTON_FACTORY)
@@ -205,7 +207,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		registerFactory('tree', TREE_FACTORY)
 		registerFactory('treeTable', TREE_TABLE_FACTORY)
 	}
-	
+
 	void registerLayouts() {
 		registerFactory('absoluteLayout', ABSOLUTE_LAYOUT_FACTORY)
 		registerFactory('gridLayout', GRID_LAYOUT_FACTORY)
@@ -217,7 +219,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		registerFactory('verticalLayout', VERTICAL_LAYOUT_FACTORY)
 		registerFactory('cssLayout', CSS_LAYOUT_FACTORY)
 	}
-		
+
 	void registerContainers() {
 		registerFactory('panel', PANEL_FACTORY)
 		registerFactory('tabSheet', TAB_SHEET_FACTORY)
@@ -227,25 +229,23 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		registerFactory('loginForm', LOGIN_FORM_FACTORY)
 		registerFactory('customComponent', CUSTOM_COMPONENT_FACTORY)
 		registerFactory('dragAndDropWrapper', DRAG_AND_DROP_WRAPPER_FACTORY)
-	
+
 		registerFactory('window', WINDOW_FACTORY)
 	}
-	
+
 	void registerOthers() {
 		registerFactory('embedded', EMBEDDED_FACTORY)
 		registerFactory('link', LINK_FACTORY)
 		registerFactory('label', LABEL_FACTORY)
 		registerFactory('menuBar', MENU_BAR_FACTORY)
 		registerFactory('upload', UPLOAD_FACTORY)
-		
+
 		registerFactory('audio', AUDIO_FACTORY)
 		registerFactory('video', VIDEO_FACTORY)
-	
-		registerFactory('form', FORM_FACTORY)
-		
+
 		registerFactory('component', COMPONENT_FACTORY)
 	}
-	
+
 	void registerListeners() {
 		registerFactory('buttonClick', BUTTON_CLICK_LISTENER_FACTORY)
 		registerFactory('layoutClick', LAYOUT_CLICK_LISTENER_FACTORY)
@@ -281,12 +281,17 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		registerFactory('fragmentChanged', FRAGMENT_CHANGE_LISTENER_FACTORY)
 		registerFactory('updateProgress', UPLOAD_PROGRESS_LISTENER_FACTORY)
 	}
-	
+
+	void registerFormNodes() {
+		registerFactory('form', FORM_FACTORY)
+		//registerFactory('field', FORM_FIELD_FACTORY)
+	}
+
 	void registerTableNodes() {
 		registerFactory('table', TABLE_FACTORY)
 		registerFactory('column', COLUMN_FACTORY)
 	}
-	
+
 	void registerDataNodes() {
 		registerFactory('item', ITEM_FACTORY)
 	}

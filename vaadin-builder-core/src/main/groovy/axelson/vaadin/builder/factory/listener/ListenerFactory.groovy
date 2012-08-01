@@ -18,13 +18,14 @@ package axelson.vaadin.builder.factory.listener
 
 import groovy.util.logging.Slf4j
 import axelson.vaadin.builder.factory.FamilyFactory
+import axelson.vaadin.builder.util.NewBuilderClosure
 
 @Slf4j
 class ListenerFactory extends FamilyFactory {
 	ListenerFactory(Class klass) {
 		super(klass)
 	}
-	
+
 	@Override
 	public boolean isHandlesNodeChildren() {
 		return true
@@ -34,8 +35,8 @@ class ListenerFactory extends FamilyFactory {
 	public boolean onNodeChildren(FactoryBuilderSupport builder, Object node, Closure childContent) {
 		if (node instanceof Pluggable) {
 			Pluggable listener = node
-//			listener.strategy = childContent
-			listener.strategy = childContent.dehydrate() //need to call dehydrate() to make sure closure is serializable
+			//need to wrap the closure to make sure it serializes correctly
+			listener.strategy = new NewBuilderClosure(childContent)
 		}
 		return false
 	}

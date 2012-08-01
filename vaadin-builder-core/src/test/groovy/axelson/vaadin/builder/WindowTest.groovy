@@ -27,33 +27,33 @@ class WindowTest extends Specification {
 	def 'can create a new window'() {
 		when:
 			Window window = new VaadinBuilder().window()
-			
+
 		then:
 			window && window instanceof Window
 	}
-	
+
 	def 'can create a new window with attributes'() {
 		when:
 			Window window = new VaadinBuilder().window(caption: 'Test Window', positionX: 100, positionY: 100)
-			
+
 		then:
 			window && window instanceof Window
 			window.caption == 'Test Window'
 			window.positionX == 100
 			window.positionY == 100
 	}
-	
+
 	def 'can add a component to a window'() {
 		when:
 			Window window = new VaadinBuilder().window {
 				label(value: 'test')
 			}
-			
+
 		then:
 			window && window instanceof Window
 			window.componentIterator.any {it instanceof Label && it.value == 'test'}
 	}
-	
+
 	def 'can add a listener to a window'() {
 		setup:
 			def test
@@ -62,15 +62,15 @@ class WindowTest extends Specification {
 					test = 'worked'
 				}
 			}
-			
+
 		when:
 			window.close()
-			
+
 		then:
 			window.getListeners(Window.CloseEvent).size() == 1
 			test == 'worked'
 	}
-	
+
 	def 'can add a listener to a popup window'() {
 		setup:
 			Window w
@@ -80,7 +80,7 @@ class WindowTest extends Specification {
 				Window pw = current
 				b = button(caption: 'Click for new Window') {
 					buttonClick {Button.ClickEvent event ->
-						w = new VaadinBuilder().window(caption: 'Test Window', positionX: 100, positionY: 100) {
+						w = window(caption: 'Test Window', positionX: 100, positionY: 100) {
 							windowClose {Window.CloseEvent e ->
 								test << 'worked'
 								pw.removeWindow(e.window)
@@ -90,21 +90,21 @@ class WindowTest extends Specification {
 					}
 				}
 			}
-			
+
 		when:
 			b.click()
 			w.close()
-			
+
 		then:
 			w && w instanceof Window
 			w.getListeners(Window.CloseEvent).size() == 1
 			test[0] == 'worked'
 	}
-	
+
 	def 'can set spacing and margin on a window'() {
 		when:
 			Window window = new VaadinBuilder().window(spacing: true, margin: true)
-			
+
 		then:
 			window.layout.margin == new MarginInfo(true)
 			window.layout.spacing == true

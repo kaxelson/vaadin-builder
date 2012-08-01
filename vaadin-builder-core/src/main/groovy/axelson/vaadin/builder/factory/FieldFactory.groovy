@@ -18,12 +18,46 @@ package axelson.vaadin.builder.factory
 
 import groovy.util.logging.Slf4j
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import com.vaadin.data.Property
+import com.vaadin.data.Property.ConversionException
+import com.vaadin.data.Property.ReadOnlyException
+import com.vaadin.data.util.AbstractProperty
+import com.vaadin.ui.Field
 
 @Slf4j
 class FieldFactory extends ComponentFactory {
 	FieldFactory(Class klass) {
 		super(klass)
+	}
+
+	@Override
+	public boolean onHandleNodeAttributes(FactoryBuilderSupport builder, Object node, Map attributes) {
+		if (node instanceof Field) {
+			Field field = node
+			attributes.remove('formPropertyId')?.with {formPropertyId ->
+				field.propertyDataSource = new FormFieldPropertyWrapper(formPropertyId: formPropertyId)
+			}
+		}
+		return super.onHandleNodeAttributes(builder, node, attributes);
+	}
+
+	static class FormFieldPropertyWrapper extends AbstractProperty implements Property.Viewer {
+		Object formPropertyId
+		Property propertyDataSource
+
+		@Override
+		public Object getValue() {
+			propertyDataSource?.value
+		}
+
+		@Override
+		public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+			propertyDataSource?.value = newValue
+		}
+
+		@Override
+		public Class<?> getType() {
+			propertyDataSource?.type
+		}
 	}
 }

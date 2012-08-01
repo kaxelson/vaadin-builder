@@ -17,30 +17,50 @@
 package axelson.vaadin.builder
 
 import spock.lang.Specification
+import axelson.vaadin.builder.factory.FormFactory
 
 import com.vaadin.data.util.BeanItem
+import com.vaadin.ui.ComboBox
 import com.vaadin.ui.Form
+import com.vaadin.ui.TextArea
 
 class FormTest extends Specification {
 	def 'can create a Form'() {
 		when:
 			Form f = new VaadinBuilder().form()
-			
+
 		then:
 			f && f instanceof Form
 	}
-	
+
 	def 'can create a Form with an itemDataSource'() {
-		setup:
 		when:
 			Form f = new VaadinBuilder().form(itemDataSource: new BeanItem(new A()))
-			
+
 		then:
 			f && f instanceof Form
 			f.getField('a') != null
 			f.getField('b') != null
 	}
-	
+
+	def 'can create a Form with specified fields'() {
+		when:
+			Form f = new VaadinBuilder().form(itemDataSource: new BeanItem(new A())) {
+				comboBox(formPropertyId: 'b', options: 1..5)
+				horizontalLayout {
+					textArea(formPropertyId: 'a')
+				}
+			}
+
+		then:
+			f && f instanceof Form
+			f.formFieldFactory instanceof FormFactory.CustomFormFieldFactory
+			f.getField('a') != null
+			f.getField('a') instanceof TextArea
+			f.getField('b') != null
+			f.getField('b') instanceof ComboBox
+	}
+
 	static class A {
 		int a, b
 	}

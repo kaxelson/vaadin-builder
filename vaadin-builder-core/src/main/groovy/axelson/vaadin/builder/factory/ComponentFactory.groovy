@@ -20,17 +20,16 @@ import groovy.util.logging.Slf4j
 import axelson.vaadin.builder.factory.listener.Pluggable
 
 import com.vaadin.terminal.Sizeable
-import com.vaadin.ui.AbstractOrderedLayout;
+import com.vaadin.ui.AbstractOrderedLayout
 import com.vaadin.ui.Component
 
 @Slf4j
-class ComponentFactory extends FamilyFactory {
-	protected Map nodeChildren = [:]
-	
+class ComponentFactory extends ChildDeferringFactory {
 	ComponentFactory(Class klass) {
 		super(klass)
 	}
-	
+
+	@Override
 	public boolean onHandleNodeAttributes(FactoryBuilderSupport builder, Object node, Map attributes) {
 		attributes.remove('width')?.with {width ->
 			if (node instanceof Sizeable) {
@@ -70,18 +69,6 @@ class ComponentFactory extends FamilyFactory {
 	}
 
 	@Override
-	public void setChild(FactoryBuilderSupport builder, Object parent, Object child) {
-		addNodeChild(parent, child)
-		super.setChild(builder, parent, child)
-	}
-	
-	@Override
-	public void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
-		processNodeChildren(builder, parent, node, getNodeChildren(node))
-		clearNodeChildren(node)
-		super.onNodeCompleted(builder, parent, node)
-	}
-	
 	public void processNodeChildren(FactoryBuilderSupport builder, Object parent, Object node, List children) {
 		if (node instanceof Component) {
 			children.each {child ->
@@ -93,22 +80,6 @@ class ComponentFactory extends FamilyFactory {
 		}
 	}
 
-	protected void addNodeChild(Object node, Object child) {
-		nodeChildren[getNodeIdentifier(node)] = (nodeChildren[getNodeIdentifier(node)] ?: []) << child
-	}
-	
-	protected List getNodeChildren(Object node) {
-		nodeChildren[getNodeIdentifier(node)] ?: []
-	}
-	
-	protected List clearNodeChildren(Object node) {
-		nodeChildren.remove(getNodeIdentifier(node))
-	}
-	
-	protected Object getNodeIdentifier(Object node) {
-		System.identityHashCode(node)
-	}
-	
 	static class ExpandRatio {
 		Component component
 		float expandRatio

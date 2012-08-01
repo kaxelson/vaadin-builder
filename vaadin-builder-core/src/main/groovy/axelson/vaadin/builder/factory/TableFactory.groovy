@@ -19,6 +19,7 @@ package axelson.vaadin.builder.factory
 import groovy.util.logging.Slf4j
 import axelson.vaadin.builder.factory.ColumnFactory.Column
 import axelson.vaadin.builder.factory.ColumnFactory.PluggableColumnGenerator
+import axelson.vaadin.builder.util.NewBuilderClosure
 
 import com.vaadin.data.Item
 import com.vaadin.terminal.Resource
@@ -36,10 +37,10 @@ class TableFactory extends SelectFactory {
 		if (node instanceof Table) {
 			Table table = node
 			def propertyIds = table.containerPropertyIds
-			
+
 			children.findAll{it instanceof Column}.each {child ->
 				Column column = child
-				
+
 				if (!propertyIds.contains(column.propertyId)) {
 					if (column.generator) {
 						table.addGeneratedColumn(column.propertyId, column.generator)
@@ -53,13 +54,13 @@ class TableFactory extends SelectFactory {
 						}
 					}
 				}
-				
+
 				// columnCollapsingAllowed must be true in order to collapse a column
 				if (table.columnCollapsingAllowed) {
 					table.setColumnCollapsed(column.propertyId, column.collapsed)
 					table.setColumnCollapsible(column.propertyId, column.collapsible)
 				}
-				
+
 				if (column.alignment != null) {table.setColumnAlignment(column.propertyId, column.alignment)}
 				if (column.expandRatio > 0) {table.setColumnExpandRatio(column.propertyId, column.expandRatio)}
 				if (column.footer != null) {table.setColumnFooter(column.propertyId, column.footer)}
@@ -68,7 +69,7 @@ class TableFactory extends SelectFactory {
 				if (column.width > 0) {table.setColumnWidth(column.propertyId, column.width)}
 				children.remove(child)
 			}
-			
+
 			children.findAll{it instanceof Item}.each {child ->
 				List values = []
 				table.visibleColumns.each {columnId ->
@@ -90,7 +91,7 @@ class ColumnFactory extends AbstractFactory {
 	public Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
 		new Column()
 	}
-	
+
 	@Override
 	public boolean isHandlesNodeChildren() {
 		return true
@@ -99,11 +100,13 @@ class ColumnFactory extends AbstractFactory {
 	@Override
 	public boolean onNodeChildren(FactoryBuilderSupport builder, Object node, Closure childContent) {
 		if (node instanceof Column) {
-			node.generator = new PluggableColumnGenerator(strategy: childContent)
+			Column column = node
+			//need to wrap the closure to make sure it serializes correctly
+			column.generator = new PluggableColumnGenerator(strategy: new NewBuilderClosure(childContent))
 		}
 		return false
 	}
-	
+
 	@Override
 	public void onNodeCompleted(FactoryBuilderSupport builder, Object parent, Object node) {
 		assert node instanceof Column && node.propertyId
@@ -124,9 +127,9 @@ class ColumnFactory extends AbstractFactory {
 		Class type = String
 		Object defaultValue = ''
 	}
-	
+
 	static class PluggableColumnGenerator implements ColumnGenerator {
-		Closure strategy = {def s, i, c ->}
+		Closure strategy = new NewBuilderClosure({def s, i, c ->})
 
 		@Override
 		public Object generateCell(Table source, Object itemId, Object columnId) {

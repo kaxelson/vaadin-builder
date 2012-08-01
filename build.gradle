@@ -8,6 +8,8 @@ subprojects {
 	project.group = 'axelson.vaadin.vaadin-builder'
 	project.version = '0.1.1'
 
+	sourceCompatibility = 1.5
+	
 	repositories {
 		mavenCentral()
 	}
