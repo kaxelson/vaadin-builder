@@ -43,6 +43,25 @@ class MenuTest extends Specification {
 			mb.items*.text == ['test1', 'test2']
 	}
 
+	def 'can create a MenuItem with a command'() {
+		setup:
+			String test = null
+			MenuBar mb = new VaadinBuilder().menuBar {
+				menuItem(caption: 'test1') {
+					menuSelected {item ->
+						test = item.text
+					}
+				}
+			}
+
+		when:
+			// simulate clicking the menu item
+			mb.changeVariables(null, [clickedId: mb.items[0].id])
+
+		then:
+			test == 'test1'
+	}
+
 	def 'can create a multi-level MenuBar'() {
 		when:
 			MenuBar mb = new VaadinBuilder().menuBar {

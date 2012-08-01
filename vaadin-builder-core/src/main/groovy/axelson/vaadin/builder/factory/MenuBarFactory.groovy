@@ -17,6 +17,8 @@
 package axelson.vaadin.builder.factory
 
 import groovy.util.logging.Slf4j
+import axelson.vaadin.builder.factory.listener.PluggableListener
+import axelson.vaadin.builder.util.NewBuilderClosure
 
 import com.vaadin.terminal.Resource
 import com.vaadin.ui.MenuBar
@@ -90,6 +92,9 @@ class MenuItemFactory extends AbstractFactory {
 			if (child instanceof MenuItem || child instanceof MenuSeparatorFactory.MenuSeparator) {
 				menuItem.children << child
 			}
+			if (child instanceof MenuBar.Command) {
+				menuItem.command = child
+			}
 		}
 	}
 
@@ -120,4 +125,30 @@ class MenuSeparatorFactory extends AbstractFactory {
 	}
 
 	static class MenuSeparator {}
+}
+
+
+@Slf4j
+class MenuCommandFactory extends AbstractFactory {
+	@Override
+	public Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
+		return new PluggableMenuCommand()
+	}
+
+	@Override
+	public boolean isHandlesNodeChildren() {
+		return true
+	}
+
+	@Override
+	public boolean onNodeChildren(FactoryBuilderSupport builder, Object node, Closure childContent) {
+		if (node instanceof PluggableMenuCommand) {
+			PluggableMenuCommand command = node
+			//need to wrap the closure to make sure it serializes correctly
+			command.strategy = new NewBuilderClosure(childContent)
+		}
+		return false
+	}
+
+	@PluggableListener(MenuBar.Command) static class PluggableMenuCommand {}
 }

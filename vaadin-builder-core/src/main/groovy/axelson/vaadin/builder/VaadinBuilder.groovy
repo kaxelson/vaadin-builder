@@ -25,6 +25,7 @@ import axelson.vaadin.builder.factory.ItemFactory
 import axelson.vaadin.builder.factory.LayoutFactory
 import axelson.vaadin.builder.factory.MediaFactory
 import axelson.vaadin.builder.factory.MenuBarFactory
+import axelson.vaadin.builder.factory.MenuCommandFactory
 import axelson.vaadin.builder.factory.MenuItemFactory
 import axelson.vaadin.builder.factory.MenuSeparatorFactory
 import axelson.vaadin.builder.factory.SelectFactory
@@ -132,6 +133,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 	public static final Factory MENU_BAR_FACTORY = new MenuBarFactory()
 	public static final Factory MENU_ITEM_FACTORY = new MenuItemFactory()
 	public static final Factory MENU_SEPARATOR_FACTORY = new MenuSeparatorFactory()
+	public static final Factory MENU_COMMAND_FACTORY = new MenuCommandFactory()
 
 	public static final Factory FORM_FACTORY = new FormFactory()
 
@@ -283,6 +285,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		registerFactory('menuBar', MENU_BAR_FACTORY)
 		registerFactory('menuItem', MENU_ITEM_FACTORY)
 		registerFactory('menuSeparator', MENU_SEPARATOR_FACTORY)
+		registerFactory('menuSelected', MENU_COMMAND_FACTORY)
 	}
 
 	void registerFormNodes() {
