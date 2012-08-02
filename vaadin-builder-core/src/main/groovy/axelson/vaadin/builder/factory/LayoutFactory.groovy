@@ -17,9 +17,10 @@
 package axelson.vaadin.builder.factory
 
 import groovy.util.logging.Slf4j
+import axelson.vaadin.builder.factory.ComponentFactory.ExpandRatioAttribute
 
-import axelson.vaadin.builder.factory.ComponentFactory.ExpandRatio
 import com.vaadin.ui.AbstractOrderedLayout
+import com.vaadin.ui.Layout
 import com.vaadin.ui.Layout.MarginHandler
 import com.vaadin.ui.Layout.MarginInfo
 
@@ -28,14 +29,14 @@ class LayoutFactory extends ComponentContainerFactory {
 	LayoutFactory(Class klass) {
 		super(klass)
 	}
-	
+
 	public boolean onHandleNodeAttributes(FactoryBuilderSupport builder, Object node, Map attributes) {
 		attributes.remove('margin')?.with {margin ->
 			applyMargin(node, margin)
 		}
 		super.onHandleNodeAttributes(builder, node, attributes)
 	}
-	
+
 	protected void applyMargin(Object node, boolean margin) {
 		if (node instanceof MarginHandler) {
 			if (margin instanceof String || margin instanceof Boolean) {
@@ -53,19 +54,34 @@ class LayoutFactory extends ComponentContainerFactory {
 	@Override
 	public void processNodeChildren(FactoryBuilderSupport builder, Object parent, Object node, List children) {
 		super.processNodeChildren(builder, parent, node, children)
-		
+
 		// expandRatio has to be set after component has been added to the container.
 		// That's why we're doing this after the call to super.
-		children.findAll{it instanceof ExpandRatio}.with {ers ->
-			processExpandRatios(node, ers)
+		children.findAll{it instanceof ExpandRatioAttribute}.with {expandRatios ->
+			processExpandRatios(node, expandRatios)
+		}
+
+		// alignment has to be set after component has been added to the container.
+		// That's why we're doing this after the call to super.
+		children.findAll{it instanceof AlignmentAttribute}.with {alignments ->
+			processAlignments(node, alignments)
 		}
 	}
-	
-	protected void processExpandRatios(Object node, List ers) {
+
+	protected void processExpandRatios(Object node, List expandRatios) {
 		if (node instanceof AbstractOrderedLayout) {
 			AbstractOrderedLayout aol = node
-			ers.each {ExpandRatio er ->
+			expandRatios.each {ExpandRatioAttribute er ->
 				aol.setExpandRatio(er.component, er.expandRatio)
+			}
+		}
+	}
+
+	protected void processAlignments(Object node, List alignments) {
+		if (node instanceof Layout.AlignmentHandler) {
+			Layout.AlignmentHandler ah = node
+			alignments.each {AlignmentAttribute alignment ->
+				ah.setComponentAlignment(alignment.component, alignment.alignment)
 			}
 		}
 	}

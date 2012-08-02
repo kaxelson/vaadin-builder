@@ -21,7 +21,9 @@ import axelson.vaadin.builder.factory.listener.Pluggable
 
 import com.vaadin.terminal.Sizeable
 import com.vaadin.ui.AbstractOrderedLayout
+import com.vaadin.ui.Alignment
 import com.vaadin.ui.Component
+import com.vaadin.ui.Layout
 
 @Slf4j
 class ComponentFactory extends ChildDeferringFactory {
@@ -60,9 +62,17 @@ class ComponentFactory extends ChildDeferringFactory {
 		attributes.remove('expandRatio')?.with {expandRatio ->
 			// at this point builder.current points to the parent of this node
 			if (builder.current instanceof AbstractOrderedLayout) {
-				builder.parentFactory.addNodeChild(builder.current, new ExpandRatio(component: node, expandRatio: expandRatio as float))
+				builder.parentFactory.addNodeChild(builder.current, new ExpandRatioAttribute(component: node, expandRatio: expandRatio as float))
 			} else {
 				log.warn 'expandRatio ignored, parent must be an AbstractOrderedLayout'
+			}
+		}
+		attributes.remove('alignment')?.with {alignment ->
+			// at this point builder.current points to the parent of this node
+			if (builder.current instanceof Layout.AlignmentHandler) {
+				builder.parentFactory.addNodeChild(builder.current, new AlignmentAttribute(component: node, alignment: alignment))
+			} else {
+				log.warn 'alignment ignored, parent must be a Layout.AlignmentHandler'
 			}
 		}
 		super.onHandleNodeAttributes(builder, node, attributes)
@@ -80,8 +90,13 @@ class ComponentFactory extends ChildDeferringFactory {
 		}
 	}
 
-	static class ExpandRatio {
+	static class ExpandRatioAttribute {
 		Component component
 		float expandRatio
+	}
+
+	static class AlignmentAttribute {
+		Component component
+		Alignment alignment
 	}
 }

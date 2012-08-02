@@ -18,6 +18,7 @@ package axelson.vaadin.builder
 
 import spock.lang.Specification
 
+import com.vaadin.ui.Alignment
 import com.vaadin.ui.HorizontalLayout
 import com.vaadin.ui.Layout
 import com.vaadin.ui.TextArea
@@ -28,11 +29,11 @@ class LayoutTest extends Specification {
 	def 'can create a new verticalLayout'() {
 		when:
 			VerticalLayout vl = new VaadinBuilder().verticalLayout()
-			
+
 		then:
 			vl && vl instanceof VerticalLayout
 	}
-	
+
 	def 'can set expand ratio'() {
 		when:
 			TextArea ta1
@@ -41,7 +42,7 @@ class LayoutTest extends Specification {
 				ta1 = textArea(expandRatio: 1)
 				ta2 = textArea(expandRatio: 2)
 			}
-			
+
 		then:
 			hl && hl instanceof Layout
 			ta1 && ta1 instanceof TextArea
@@ -49,11 +50,28 @@ class LayoutTest extends Specification {
 			hl.getExpandRatio(ta1) == 1
 			hl.getExpandRatio(ta2) == 2
 	}
-	
+
+	def 'can set alignment'() {
+		when:
+			TextArea ta1
+			TextArea ta2
+			HorizontalLayout hl = new VaadinBuilder().horizontalLayout(width: '100%') {
+				ta1 = textArea(alignment: Alignment.TOP_LEFT)
+				ta2 = textArea(alignment: Alignment.BOTTOM_RIGHT)
+			}
+
+		then:
+			hl && hl instanceof Layout.AlignmentHandler
+			ta1 && ta1 instanceof TextArea
+			ta2 && ta2 instanceof TextArea
+			hl.getComponentAlignment(ta1) == Alignment.TOP_LEFT
+			hl.getComponentAlignment(ta2) == Alignment.BOTTOM_RIGHT
+	}
+
 	def 'can set margin on layout'() {
 		when:
 			VerticalLayout vl = new VaadinBuilder().verticalLayout(margin: true)
-			
+
 		then:
 			vl && vl instanceof Layout
 			vl instanceof Layout.MarginHandler
