@@ -21,8 +21,6 @@ import axelson.vaadin.builder.factory.ComponentFactory.ExpandRatioAttribute
 
 import com.vaadin.ui.AbstractOrderedLayout
 import com.vaadin.ui.Layout
-import com.vaadin.ui.Layout.MarginHandler
-import com.vaadin.ui.Layout.MarginInfo
 
 @Slf4j
 class LayoutFactory extends ComponentContainerFactory {
@@ -31,18 +29,31 @@ class LayoutFactory extends ComponentContainerFactory {
 	}
 
 	public boolean onHandleNodeAttributes(FactoryBuilderSupport builder, Object node, Map attributes) {
+		attributes.remove('spacing')?.with {spacing ->
+			applySpacing(node, spacing)
+		}
 		attributes.remove('margin')?.with {margin ->
 			applyMargin(node, margin)
 		}
 		super.onHandleNodeAttributes(builder, node, attributes)
 	}
 
-	protected void applyMargin(Object node, boolean margin) {
-		if (node instanceof MarginHandler) {
+	protected void applySpacing(Object node, boolean spacing) {
+		if (node instanceof Layout.SpacingHandler) {
+			Layout.SpacingHandler sh = node
+			sh.spacing = spacing
+		} else {
+			log.warn 'spacing ignored, node must be a SpacingHandler'
+		}
+	}
+
+	protected void applyMargin(Object node, Object margin) {
+		if (node instanceof Layout.MarginHandler) {
+			Layout.MarginHandler mh = node
 			if (margin instanceof String || margin instanceof Boolean) {
-				node.margin = new MarginInfo(margin as boolean)
-			} else if (margin instanceof MarginInfo) {
-				node.margin = margin
+				mh.margin = new Layout.MarginInfo(margin as boolean)
+			} else if (margin instanceof Layout.MarginInfo) {
+				mh.margin = margin
 			} else {
 				log.warn 'margin ignored, type must be String, Boolean, or MarginInfo'
 			}
@@ -63,7 +74,7 @@ class LayoutFactory extends ComponentContainerFactory {
 
 		// alignment has to be set after component has been added to the container.
 		// That's why we're doing this after the call to super.
-		children.findAll{it instanceof AlignmentAttribute}.with {alignments ->
+		children.findAll{it instanceof ComponentFactory.AlignmentAttribute}.with {alignments ->
 			processAlignments(node, alignments)
 		}
 	}
@@ -80,7 +91,7 @@ class LayoutFactory extends ComponentContainerFactory {
 	protected void processAlignments(Object node, List alignments) {
 		if (node instanceof Layout.AlignmentHandler) {
 			Layout.AlignmentHandler ah = node
-			alignments.each {AlignmentAttribute alignment ->
+			alignments.each {ComponentFactory.AlignmentAttribute alignment ->
 				ah.setComponentAlignment(alignment.component, alignment.alignment)
 			}
 		}

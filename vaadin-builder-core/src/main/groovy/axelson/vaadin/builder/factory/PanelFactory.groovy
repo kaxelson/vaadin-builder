@@ -26,32 +26,36 @@ class PanelFactory extends LayoutFactory {
 	PanelFactory() {
 		this(Panel)
 	}
-	
+
 	protected PanelFactory(Class klass) {
 		super(klass)
 	}
-	
+
 	@Override
-	public boolean onHandleNodeAttributes(FactoryBuilderSupport builder, Object node, Map attributes) {
-		attributes.remove('spacing')?.with {spacing ->
-			if (node.layout instanceof AbstractOrderedLayout) {
-				node.layout.spacing = spacing
-			}
-		}
-		super.onHandleNodeAttributes(builder, node, attributes)
+	protected void applySpacing(Object node, boolean spacing) {
+		assert node instanceof Panel
+		Panel panel = node
+		super.applySpacing(panel.content, spacing)
 	}
 
 	@Override
-	protected void applyMargin(Object node, boolean margin) {
+	protected void applyMargin(Object node, Object margin) {
 		assert node instanceof Panel
 		Panel panel = node
-		super.applyMargin(panel.layout, margin)
+		super.applyMargin(panel.content, margin)
 	}
 
 	@Override
-	protected void processExpandRatios(Object node, List ers) {
+	protected void processExpandRatios(Object node, List expandRatios) {
 		assert node instanceof Panel
 		Panel panel = node
-		super.processExpandRatios(panel.layout, ers)
+		super.processExpandRatios(panel.content, expandRatios)
+	}
+
+	@Override
+	protected void processAlignments(Object node, List alignments) {
+		assert node instanceof Panel
+		Panel panel = node
+		super.processAlignments(panel.content, alignments)
 	}
 }

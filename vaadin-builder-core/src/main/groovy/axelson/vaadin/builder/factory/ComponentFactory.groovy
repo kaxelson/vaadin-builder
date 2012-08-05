@@ -61,18 +61,18 @@ class ComponentFactory extends ChildDeferringFactory {
 		}
 		attributes.remove('expandRatio')?.with {expandRatio ->
 			// at this point builder.current points to the parent of this node
-			if (builder.current instanceof AbstractOrderedLayout) {
+			if (builder.parentFactory) {
 				builder.parentFactory.addNodeChild(builder.current, new ExpandRatioAttribute(component: node, expandRatio: expandRatio as float))
 			} else {
-				log.warn 'expandRatio ignored, parent must be an AbstractOrderedLayout'
+				log.warn 'expandRatio ignored, no parent'
 			}
 		}
 		attributes.remove('alignment')?.with {alignment ->
 			// at this point builder.current points to the parent of this node
-			if (builder.current instanceof Layout.AlignmentHandler) {
+			if (builder.parentFactory) {
 				builder.parentFactory.addNodeChild(builder.current, new AlignmentAttribute(component: node, alignment: alignment))
 			} else {
-				log.warn 'alignment ignored, parent must be a Layout.AlignmentHandler'
+				log.warn 'alignment ignored, no parent'
 			}
 		}
 		super.onHandleNodeAttributes(builder, node, attributes)

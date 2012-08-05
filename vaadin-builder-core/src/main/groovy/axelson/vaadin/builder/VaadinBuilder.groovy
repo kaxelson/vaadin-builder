@@ -28,6 +28,7 @@ import axelson.vaadin.builder.factory.MenuBarFactory
 import axelson.vaadin.builder.factory.MenuCommandFactory
 import axelson.vaadin.builder.factory.MenuItemFactory
 import axelson.vaadin.builder.factory.MenuSeparatorFactory
+import axelson.vaadin.builder.factory.PanelFactory
 import axelson.vaadin.builder.factory.SelectFactory
 import axelson.vaadin.builder.factory.SimpleComponentFactory
 import axelson.vaadin.builder.factory.TabFactory
@@ -61,7 +62,6 @@ import com.vaadin.ui.LoginForm
 import com.vaadin.ui.NativeButton
 import com.vaadin.ui.NativeSelect
 import com.vaadin.ui.OptionGroup
-import com.vaadin.ui.Panel
 import com.vaadin.ui.PasswordField
 import com.vaadin.ui.PopupDateField
 import com.vaadin.ui.PopupView
@@ -111,7 +111,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 	public static final Factory AUDIO_FACTORY = new MediaFactory(Audio)
 	public static final Factory VIDEO_FACTORY = new MediaFactory(Video)
 
-	public static final Factory PANEL_FACTORY = new ComponentContainerFactory(Panel)
+	public static final Factory PANEL_FACTORY = new PanelFactory()
 	public static final Factory TAB_SHEET_FACTORY = new TabSheetFactory(TabSheet)
 	public static final Factory TAB_FACTORY = new TabFactory()
 	public static final Factory ACCORDION_FACTORY = new TabSheetFactory(Accordion)
