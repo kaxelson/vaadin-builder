@@ -1,65 +1,71 @@
 apply plugin: 'war'
-apply plugin: 'gae'
-apply plugin: 'gaelyk'
+//apply plugin: 'application'
+//apply plugin: 'gae'
+//apply plugin: 'gaelyk'
 
-buildscript {
-	repositories {
-		mavenCentral()
-	}
+//mainClassName = "HelloWorld"
+//applicationName = 'vaadin-builder-demo'
 
-	dependencies {
-		classpath 'org.gradle.api.plugins:gradle-gae-plugin:0.7'
-		classpath 'org.gradle.api.plugins:gradle-gaelyk-plugin:0.3.3'
-		classpath 'eu.appsatori:gradle-fatjar-plugin:0.1.1'
-	}
-}
+//buildscript {
+//	repositories {
+//		mavenCentral()
+//	}
+//
+//	dependencies {
+//		classpath 'org.gradle.api.plugins:gradle-gae-plugin:0.7'
+//		classpath 'org.gradle.api.plugins:gradle-gaelyk-plugin:0.3.3'
+//		classpath 'eu.appsatori:gradle-fatjar-plugin:0.1.1'
+//	}
+//}
 
 dependencies {
-    def gaeVersion = '1.7.0'
-	
-	gaeSdk "com.google.appengine:appengine-java-sdk:$gaeVersion"
-	
-	compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion"
-	compile "com.google.appengine:appengine-api-labs:$gaeVersion"
-	compile 'org.gaelyk:gaelyk:1.2'
+//    def gaeVersion = '1.7.0'
+
+//	gaeSdk "com.google.appengine:appengine-java-sdk:$gaeVersion"
+
+//	compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion"
+//	compile "com.google.appengine:appengine-api-labs:$gaeVersion"
+//	compile 'org.gaelyk:gaelyk:1.2'
 	compile project(':vaadin-builder-core')
 	compile project(':vaadin-builder-util')
-	
+
 	runtime 'com.google.gwt:gwt-user:2.4.0'
-	
-	testCompile 'org.gaelyk:gaelyk-spock:0.3.0.1'
-	testCompile "com.google.appengine:appengine-api-stubs:$gaeVersion"
-	testCompile "com.google.appengine:appengine-testing:$gaeVersion"
+
+//	testCompile 'org.gaelyk:gaelyk-spock:0.3.0.1'
+//	testCompile "com.google.appengine:appengine-api-stubs:$gaeVersion"
+//	testCompile "com.google.appengine:appengine-testing:$gaeVersion"
 
     testCompile 'org.codehaus.geb:geb-spock:0.7.0'
     testCompile 'org.seleniumhq.selenium:selenium-chrome-driver:2.20.0'
 }
 
-gae {
-	downloadSdk = true
-	warDir = file('src/main/webapp/')
-	optimizeWar = true
-	appcfg {
-		email = 'kaxelson@gmail.com'
-	}
-	jvmFlags = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=7777']
-}
+//gae {
+//	downloadSdk = true
+//	warDir = file('src/main/webapp/')
+//	optimizeWar = true
+//	appcfg {
+//		email = 'kaxelson@gmail.com'
+//	}
+//	jvmFlags = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=7777']
+//}
+//
+//gaeExplodeWar.dependsOn gaelykPrecompileGroovlet
+//gaeExplodeWar.dependsOn gaelykPrecompileTemplate
+//
+//gaelykPrecompileGroovlet.dependsOn compileGroovy
+//gaelykPrecompileTemplate.dependsOn compileGroovy
+//
+//clean {
+//	 delete sourceSets*.output.classesDir
+//}
+//
+//task copyRuntimeLibraries(type: Sync) {
+//	def webAppLibDirName = 'src/main/webapp/WEB-INF/lib'
+//	description = "Copies runtime libraries to $webAppLibDirName."
+//	from configurations.runtime
+//	into webAppLibDirName
+//}
+//
+//gaeRun.dependsOn copyRuntimeLibraries
 
-gaeExplodeWar.dependsOn gaelykPrecompileGroovlet
-gaeExplodeWar.dependsOn gaelykPrecompileTemplate
-
-gaelykPrecompileGroovlet.dependsOn compileGroovy
-gaelykPrecompileTemplate.dependsOn compileGroovy
-
-clean {
-	 delete sourceSets*.output.classesDir
-}
-
-task copyRuntimeLibraries(type: Sync) {
-	def webAppLibDirName = 'src/main/webapp/WEB-INF/lib'
-	description = "Copies runtime libraries to $webAppLibDirName."
-	from configurations.runtime
-	into webAppLibDirName
-}
-
-gaeRun.dependsOn copyRuntimeLibraries
+task stage(dependsOn: ['clean', 'war'])
