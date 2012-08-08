@@ -16,35 +16,85 @@
 
 package axelson.vaadin.builder.demo
 
+import groovy.util.logging.Slf4j
 import axelson.vaadin.builder.VaadinBuilder
-import axelson.vaadin.builder.demo.example.ButtonExample
-import axelson.vaadin.builder.demo.example.TryItExample
-import axelson.vaadin.builder.demo.example.WindowExample
 
 import com.vaadin.Application
+import com.vaadin.terminal.ClassResource
+import com.vaadin.ui.Button
+import com.vaadin.ui.Label
+import com.vaadin.ui.Panel
+import com.vaadin.ui.TextArea
+import com.vaadin.ui.UriFragmentUtility
 import com.vaadin.ui.Window
+import com.vaadin.ui.themes.BaseTheme
 
+@Slf4j
 class VaadinBuilderDemoApplication extends Application {
 	static final long serialVersionUID = 1L
-	
-	def examples = [
-		new TryItExample(),
-		new ButtonExample(),
-		new WindowExample()
-	]
-	
+
+	TextArea ta
+	Panel p
+	Button b
+
 	@Override
 	void init() {
+		def contoller = this
 		mainWindow = new VaadinBuilder().window(caption: 'VaadinBuilder Demo') {
-			tabSheet {
-				this.examples.each {example ->
-					tab(caption: example.name) {
-						verticalLayout(margin: true, spacing: true) {
-							label(value: example.code)
-							component(example.component)
-						}
+			UriFragmentUtility urifu = uriFragmentUtility {
+				fragmentChanged {UriFragmentUtility.FragmentChangedEvent e ->
+					contoller.loadSample(e.uriFragmentUtility.fragment)
+				}
+			}
+			button(caption: 'Button', styleName: BaseTheme.BUTTON_LINK) {
+				buttonClick {e ->
+					urifu.fragment = e.button.caption.toLowerCase()
+				}
+			}
+			verticalLayout(spacing: true, width: '100%') {
+				ta = textArea(caption: 'Builder Code', width: '100%', value: 'Type you builder code here or click one of the links for an example.')
+				b = button(caption: 'Render') {
+					buttonClick {
+						contoller.renderBuilderCode()
 					}
 				}
+				p = panel(caption: 'Result', width: '100%') {
+					label(value: 'Click Render to display your Vaadin UI')
+				}
+			}
+
+//			tabSheet {
+//				this.examples.each {example ->
+//					tab(caption: example.name) {
+//						verticalLayout(margin: true, spacing: true) {
+//							label(value: example.code)
+//							component(example.component)
+//						}
+//					}
+//				}
+//			}
+		}
+	}
+
+	private void loadSample(String sample) {
+		if (sample) {
+			ClassResource cr = new ClassResource("/vaadin/${sample}.groovy", this)
+			String sampleCode = cr.stream.stream.text
+			log.info 'here'
+			ta.value = sampleCode
+			renderBuilderCode()
+		}
+	}
+
+	private void renderBuilderCode() {
+		if (ta.value) {
+			p.removeAllComponents()
+			try {
+				def result = new GroovyShell().evaluate(ta.value)
+				p.addComponent(result)
+				b.componentError = null
+			} catch (Throwable t) {
+				p.addComponent(new Label(t.message))
 			}
 		}
 	}
