@@ -8,7 +8,9 @@ subprojects {
 	project.group = 'axelson.vaadin.vaadin-builder'
 	project.version = '0.1.1'
 
-	sourceCompatibility = 1.5
+	def compatibilityVersion = 1.5
+	sourceCompatibility = compatibilityVersion
+	targetCompatibility = compatibilityVersion
 	
 	repositories {
 		mavenCentral()

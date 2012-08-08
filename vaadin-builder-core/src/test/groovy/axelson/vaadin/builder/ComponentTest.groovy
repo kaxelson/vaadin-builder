@@ -26,30 +26,30 @@ class ComponentTest extends Specification {
 	def 'can set width on a layout'() {
 		when:
 			VerticalLayout vl = new VaadinBuilder().verticalLayout(width: '100%')
-			
+
 		then:
 			vl && vl instanceof Sizeable
 			vl.width == 100
 			vl.widthUnits == Sizeable.UNITS_PERCENTAGE
 	}
-	
+
 	def 'can set width on a field'() {
 		when:
 			TextArea ta = new VaadinBuilder().textArea(width: '100%')
-			
+
 		then:
 			ta && ta instanceof Sizeable
 			ta.width == 100
 			ta.widthUnits == Sizeable.UNITS_PERCENTAGE
 	}
-	
+
 	def 'current refers to the enclosing node'() {
 		when:
 			def test
 			VerticalLayout vl = new VaadinBuilder().verticalLayout {
 				test = current
 			}
-			
+
 		then:
 			test == vl
 	}

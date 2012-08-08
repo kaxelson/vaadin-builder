@@ -33,6 +33,15 @@ class ComponentFactory extends ChildDeferringFactory {
 
 	@Override
 	public boolean onHandleNodeAttributes(FactoryBuilderSupport builder, Object node, Map attributes) {
+		attributes.remove('listener')?.with {listener ->
+			addListener(node, listener)
+		}
+		attributes.remove('listeners')?.with {listeners ->
+			assert listeners instanceof Iterable
+			listeners.each {listener ->
+				addListener(node, listener)
+			}
+		}
 		attributes.remove('width')?.with {width ->
 			if (node instanceof Sizeable) {
 				if (width instanceof String) {
@@ -87,6 +96,14 @@ class ComponentFactory extends ChildDeferringFactory {
 					node.addListener(child)
 				}
 			}
+		}
+	}
+
+	protected void addListener(Object node, Object listener) {
+		if (node.respondsTo('addListener', [listener] as Object[])) {
+			node.addListener(listener)
+		} else {
+			log.warn 'listener ignored, node does not support this listener'
 		}
 	}
 

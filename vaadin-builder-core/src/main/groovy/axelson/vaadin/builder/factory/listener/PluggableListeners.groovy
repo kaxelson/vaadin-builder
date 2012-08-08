@@ -54,10 +54,8 @@ class PluggableListeners {
 	@PluggableListener(Paintable.RepaintRequestListener) static class PluggableRepaintRequestListener {}
 	@PluggableListener(Component.Listener) static class PluggableComponentListener {}
 	@PluggableListener(UriFragmentUtility.FragmentChangedListener) static class PluggableFragmentChangedListener {}
-	
-	static class PluggableUploadProgressListener extends Pluggable implements Upload.ProgressListener, Serializable {
-//		static final long serialVersionUID = 1L
 
+	static class PluggableUploadProgressListener extends Pluggable implements Upload.ProgressListener, Serializable {
 		@Override
 		public void updateProgress(long readBytes, long contentLength) {
 			execute([readBytes, contentLength])

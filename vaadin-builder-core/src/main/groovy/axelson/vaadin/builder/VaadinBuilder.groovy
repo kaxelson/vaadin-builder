@@ -76,6 +76,7 @@ import com.vaadin.ui.Tree
 import com.vaadin.ui.TreeTable
 import com.vaadin.ui.TwinColSelect
 import com.vaadin.ui.Upload
+import com.vaadin.ui.UriFragmentUtility;
 import com.vaadin.ui.VerticalLayout
 import com.vaadin.ui.VerticalSplitPanel
 import com.vaadin.ui.Video
@@ -107,6 +108,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 	public static final Factory LINK_FACTORY = new ComponentFactory(Link)
 	public static final Factory LABEL_FACTORY = new ComponentFactory(Label)
 	public static final Factory UPLOAD_FACTORY = new ComponentFactory(Upload)
+	public static final Factory URI_FRAGMENT_UTILITY_FACTORY = new ComponentFactory(UriFragmentUtility)
 
 	public static final Factory AUDIO_FACTORY = new MediaFactory(Audio)
 	public static final Factory VIDEO_FACTORY = new MediaFactory(Video)
@@ -213,7 +215,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		registerFactory('gridLayout', GRID_LAYOUT_FACTORY)
 		registerFactory('horizontalSplitPanel', HORIZONTAL_SPLIT_PANEL_FACTORY)
 		registerFactory('verticalSplitPanel', VERTICAL_SPLIT_PANEL_FACTORY)
-		registerFactory('customLayout', CUSTOM_LAYOUT_FACTORY)
+		registerFactory('customLayout', CUSTOM_LAYOUT_FACTORY) //TODO: may not be needed
 		registerFactory('formLayout', FORM_LAYOUT_FACTORY)
 		registerFactory('horizontalLayout', HORIZONTAL_LAYOUT_FACTORY)
 		registerFactory('verticalLayout', VERTICAL_LAYOUT_FACTORY)
@@ -227,7 +229,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		registerFactory('accordion', ACCORDION_FACTORY)
 		registerFactory('popupView', POPUP_VIEW_FACTORY)
 		registerFactory('loginForm', LOGIN_FORM_FACTORY)
-		registerFactory('customComponent', CUSTOM_COMPONENT_FACTORY)
+		registerFactory('customComponent', CUSTOM_COMPONENT_FACTORY) //TODO: may not be needed
 		registerFactory('dragAndDropWrapper', DRAG_AND_DROP_WRAPPER_FACTORY)
 
 		registerFactory('window', WINDOW_FACTORY)
@@ -238,6 +240,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		registerFactory('link', LINK_FACTORY)
 		registerFactory('label', LABEL_FACTORY)
 		registerFactory('upload', UPLOAD_FACTORY)
+		registerFactory('uriFragmentUtility', URI_FRAGMENT_UTILITY_FACTORY)
 
 		registerFactory('audio', AUDIO_FACTORY)
 		registerFactory('video', VIDEO_FACTORY)

@@ -18,8 +18,10 @@ package axelson.vaadin.builder
 
 import spock.lang.Specification
 
+import com.vaadin.ui.Alignment
 import com.vaadin.ui.Button
 import com.vaadin.ui.Label
+import com.vaadin.ui.Layout
 import com.vaadin.ui.Window
 import com.vaadin.ui.Layout.MarginInfo
 
@@ -106,7 +108,24 @@ class WindowTest extends Specification {
 			Window window = new VaadinBuilder().window(spacing: true, margin: true)
 
 		then:
-			window.layout.margin == new MarginInfo(true)
-			window.layout.spacing == true
+			window.content instanceof Layout.MarginHandler
+			window.content instanceof Layout.SpacingHandler
+			window.content.margin == new MarginInfo(true)
+			window.content.spacing == true
+	}
+
+	def 'can set alignment on a window component'() {
+		when:
+			Label l1
+			Label l2
+			Window window = new VaadinBuilder().window(width: '500px') {
+				l1 = label(alignment: Alignment.BOTTOM_LEFT, value: 'test')
+				l2 = label(alignment: Alignment.TOP_RIGHT, value: 'test')
+			}
+
+		then:
+			window.content instanceof Layout.AlignmentHandler
+			window.content.getComponentAlignment(l1) == Alignment.BOTTOM_LEFT
+			window.content.getComponentAlignment(l2) == Alignment.TOP_RIGHT
 	}
 }
