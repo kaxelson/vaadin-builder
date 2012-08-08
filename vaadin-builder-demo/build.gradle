@@ -31,6 +31,7 @@ dependencies {
 	compile project(':vaadin-builder-util')
 
 	runtime 'com.google.gwt:gwt-user:2.4.0'
+	runtime 'org.mortbay.jetty:jetty-runner:8.1.0.RC4'
 
 //	testCompile 'org.gaelyk:gaelyk-spock:0.3.0.1'
 //	testCompile "com.google.appengine:appengine-api-stubs:$gaeVersion"
@@ -70,7 +71,7 @@ dependencies {
 //gaeRun.dependsOn copyRuntimeLibraries
 
 //jettyRunWar.daemon = true
-[jettyRun, jettyRunWar]*.httpPort = (System.properties['jetty.httpPort'] as int) ?: 9999
+[jettyRun, jettyRunWar]*.httpPort = (System.properties['jetty.httpPort'] ?: 9999) as int
 
 task stage(dependsOn: ['clean', 'war'])
 
