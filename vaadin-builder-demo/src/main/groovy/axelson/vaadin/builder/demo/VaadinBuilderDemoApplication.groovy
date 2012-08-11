@@ -33,12 +33,23 @@ import com.vaadin.ui.themes.BaseTheme
 class VaadinBuilderDemoApplication extends Application {
 	static final long serialVersionUID = 1L
 
+	Map samples = [
+		'buttonPush': 'Push button',
+		'buttonDisableOnClick': 'Disable button on click',
+		'buttonLink': 'Link button',
+		'checkBox': 'Checkbox',
+		'linkCurrentWindow': 'Link',
+		'linkNoDecorations': 'Link, configure window',
+		'linkSizedWindow': 'Link, sized window',
+	]
+
 	TextArea ta
 	Panel p
 	Button b
 
 	@Override
 	void init() {
+		theme = 'vbd'
 		def contoller = this
 		mainWindow = new VaadinBuilder().window(caption: 'VaadinBuilder Demo') {
 			UriFragmentUtility urifu = uriFragmentUtility {
@@ -46,20 +57,26 @@ class VaadinBuilderDemoApplication extends Application {
 					contoller.loadSample(e.uriFragmentUtility.fragment)
 				}
 			}
-			button(caption: 'Button', styleName: BaseTheme.BUTTON_LINK) {
-				buttonClick {e ->
-					urifu.fragment = e.button.caption.toLowerCase()
-				}
-			}
-			verticalLayout(spacing: true, width: '100%') {
-				ta = textArea(caption: 'Builder Code', width: '100%', value: 'Type you builder code here or click one of the links for an example.')
-				b = button(caption: 'Render') {
-					buttonClick {
-						contoller.renderBuilderCode()
+			horizontalLayout(width: '100%', spacing: true) {
+				verticalLayout(spacing: true, width: '150px') {
+					this.samples.each {k, v ->
+						button(caption: v, styleName: BaseTheme.BUTTON_LINK) {
+							buttonClick {e ->
+								urifu.fragment = k
+							}
+						}
 					}
 				}
-				p = panel(caption: 'Result', width: '100%') {
-					label(value: 'Click Render to display your Vaadin UI')
+				verticalLayout(spacing: true, expandRatio: 1) {
+					ta = textArea(caption: 'Code', width: '100%', rows: 10, wordwrap: false, value: 'Type you builder code here or click one of the links for an example.')
+					b = button(caption: 'Render') {
+						buttonClick {
+							contoller.renderBuilderCode()
+						}
+					}
+					p = panel(caption: 'Result', width: '100%') {
+						label(value: 'Click Render to display your Vaadin UI')
+					}
 				}
 			}
 
