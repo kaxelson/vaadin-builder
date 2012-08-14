@@ -9,7 +9,7 @@ dependencies {
 	compile project(':vaadin-builder-util')
 
 	runtime 'com.google.gwt:gwt-user:2.4.0'
-	runtime 'org.mortbay.jetty:jetty-runner:8.1.0.RC4'
+//	runtime 'org.mortbay.jetty:jetty-runner:8.1.0.RC4'
 
     testCompile 'org.codehaus.geb:geb-spock:0.7.0'
     testCompile 'org.seleniumhq.selenium:selenium-chrome-driver:2.20.0'

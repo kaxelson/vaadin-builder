@@ -19,6 +19,7 @@ package axelson.vaadin.builder
 import axelson.vaadin.builder.factory.ColumnFactory
 import axelson.vaadin.builder.factory.ComponentContainerFactory
 import axelson.vaadin.builder.factory.ComponentFactory
+import axelson.vaadin.builder.factory.EmbeddedFactory
 import axelson.vaadin.builder.factory.FieldFactory
 import axelson.vaadin.builder.factory.FormFactory
 import axelson.vaadin.builder.factory.ItemFactory
@@ -38,18 +39,22 @@ import axelson.vaadin.builder.factory.WindowFactory
 import axelson.vaadin.builder.factory.listener.ListenerFactory
 import axelson.vaadin.builder.factory.listener.PluggableListeners
 
+import com.vaadin.event.Action
+import com.vaadin.event.ShortcutListener
+import com.vaadin.terminal.Paintable.RepaintRequestEvent
+import com.vaadin.terminal.Paintable.RepaintRequestListener
 import com.vaadin.ui.AbsoluteLayout
 import com.vaadin.ui.Accordion
 import com.vaadin.ui.Audio
 import com.vaadin.ui.Button
 import com.vaadin.ui.CheckBox
 import com.vaadin.ui.ComboBox
+import com.vaadin.ui.Component
 import com.vaadin.ui.CssLayout
 import com.vaadin.ui.CustomComponent
 import com.vaadin.ui.CustomLayout
 import com.vaadin.ui.DateField
 import com.vaadin.ui.DragAndDropWrapper
-import com.vaadin.ui.Embedded
 import com.vaadin.ui.FormLayout
 import com.vaadin.ui.GridLayout
 import com.vaadin.ui.HorizontalLayout
@@ -76,7 +81,7 @@ import com.vaadin.ui.Tree
 import com.vaadin.ui.TreeTable
 import com.vaadin.ui.TwinColSelect
 import com.vaadin.ui.Upload
-import com.vaadin.ui.UriFragmentUtility;
+import com.vaadin.ui.UriFragmentUtility
 import com.vaadin.ui.VerticalLayout
 import com.vaadin.ui.VerticalSplitPanel
 import com.vaadin.ui.Video
@@ -104,7 +109,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 	public static final Factory TREE_FACTORY = new SelectFactory(Tree)
 	public static final Factory TREE_TABLE_FACTORY = new SelectFactory(TreeTable)
 
-	public static final Factory EMBEDDED_FACTORY = new ComponentFactory(Embedded)
+	public static final Factory EMBEDDED_FACTORY = new EmbeddedFactory()
 	public static final Factory LINK_FACTORY = new ComponentFactory(Link)
 	public static final Factory LABEL_FACTORY = new ComponentFactory(Label)
 	public static final Factory UPLOAD_FACTORY = new ComponentFactory(Upload)
@@ -186,7 +191,12 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		super(init)
 	}
 
-	void registerFields() {
+//	@Override
+//	protected void setClosureDelegate(Closure closure, Object node) {
+//		closure.setDelegate(new FirstResponder(node, this))
+//	}
+
+	void registerFieldFactories() {
 		registerFactory('button', BUTTON_FACTORY)
 		registerFactory('nativeButton', NATIVE_BUTTON_FACTORY)
 		registerFactory('checkBox', CHECK_BOX_FACTORY)
@@ -210,7 +220,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		registerFactory('treeTable', TREE_TABLE_FACTORY)
 	}
 
-	void registerLayouts() {
+	void registerLayoutFactories() {
 		registerFactory('absoluteLayout', ABSOLUTE_LAYOUT_FACTORY)
 		registerFactory('gridLayout', GRID_LAYOUT_FACTORY)
 		registerFactory('horizontalSplitPanel', HORIZONTAL_SPLIT_PANEL_FACTORY)
@@ -222,7 +232,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		registerFactory('cssLayout', CSS_LAYOUT_FACTORY)
 	}
 
-	void registerContainers() {
+	void registerContainerFactories() {
 		registerFactory('panel', PANEL_FACTORY)
 		registerFactory('tabSheet', TAB_SHEET_FACTORY)
 		registerFactory('tab', TAB_FACTORY)
@@ -235,7 +245,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		registerFactory('window', WINDOW_FACTORY)
 	}
 
-	void registerOthers() {
+	void registerOtherFactories() {
 		registerFactory('embedded', EMBEDDED_FACTORY)
 		registerFactory('link', LINK_FACTORY)
 		registerFactory('label', LABEL_FACTORY)
@@ -248,7 +258,7 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		registerFactory('component', COMPONENT_FACTORY)
 	}
 
-	void registerListeners() {
+	void registerListenerFactories() {
 		registerFactory('buttonClick', BUTTON_CLICK_LISTENER_FACTORY)
 		registerFactory('layoutClick', LAYOUT_CLICK_LISTENER_FACTORY)
 		registerFactory('blur', BLUR_LISTENER_FACTORY)
@@ -284,23 +294,161 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		registerFactory('updateProgress', UPLOAD_PROGRESS_LISTENER_FACTORY)
 	}
 
-	void registerMenuNodes() {
+	void registerMenuFactories() {
 		registerFactory('menuBar', MENU_BAR_FACTORY)
 		registerFactory('menuItem', MENU_ITEM_FACTORY)
 		registerFactory('menuSeparator', MENU_SEPARATOR_FACTORY)
 		registerFactory('menuSelected', MENU_COMMAND_FACTORY)
 	}
 
-	void registerFormNodes() {
+	void registerFormFactories() {
 		registerFactory('form', FORM_FACTORY)
 	}
 
-	void registerTableNodes() {
+	void registerTableFactories() {
 		registerFactory('table', TABLE_FACTORY)
 		registerFactory('column', COLUMN_FACTORY)
 	}
 
-	void registerDataNodes() {
+	void registerDataFactories() {
 		registerFactory('item', ITEM_FACTORY)
 	}
+
+	void registerExplicitMethods() {
+		registerExplicitMethod('listener') {listener ->
+			assert listener != null
+			if (current.respondsTo('addListener', [listener] as Object[])) {
+				current.addListener(listener)
+			} else {
+				log.info 'Ignoring listener because the current node does not have a matching addListener method'
+			}
+		}
+		registerExplicitMethod('shortcutListener') {listener ->
+			assert listener != null && listener instanceof ShortcutListener
+			if (current instanceof Action.ShortcutNotifier) {
+				Action.ShortcutNotifier sn = current
+				sn.addShortcutListener(listener)
+			} else {
+				log.info 'Ignoring shortcutListener because the current node is not a ShortcutNotifier'
+			}
+		}
+		registerExplicitMethod('action') {action ->
+			assert action != null && action instanceof Action && action instanceof Action.Listener
+			if (current instanceof Action.Notifier) {
+				Action.Notifier n = current
+				n.addAction(action)
+			} else {
+				log.info 'Ignoring action because the current node is not an ActionNotifier'
+			}
+		}
+		//TODO: this can be improved (and we can add detach) once the Vaadin guys expose component attachment/detachment as an event
+		registerExplicitMethod('attach') {closure ->
+			assert closure != null && closure instanceof Closure && closure.maximumNumberOfParameters == 1
+			if (current instanceof Component) {
+				Component c = current
+				c.addListener([
+					repaintRequested: {RepaintRequestEvent event ->
+						// only call the closure if the call to this listener is a result of a component attach call
+						if (Thread.currentThread().getStackTrace().any {it.methodName == 'attach'}) {
+							closure.call(event.paintable)
+						}
+					}
+				] as RepaintRequestListener)
+			} else {
+				log.info 'Ignoring attach because the current node is not a Component'
+			}
+		}
+	}
+
+//	private static class FirstResponder {
+//		List responders = []
+//
+//		FirstResponder(Object... responders) {
+//			this.responders = responders
+//		}
+//
+//		Object invokeMethod(String name, Object args) {
+//			List exceptions = []
+//			Object value
+//			responders.find {
+//				try {
+//					value = it.invokeMethod(name, args)
+//					return true
+//				} catch (MissingMethodException e) {
+//					exceptions << e
+//				}
+//				return false
+//			}
+//			if (exceptions) {
+//				throw new FirstResponderMissingMethodException(name, FirstResponder, args, exceptions)
+//			}
+//			return value
+//		}
+//
+//		Object getProperty(String propertyName) {
+//			List exceptions = []
+//			Object value
+//			responders.find {
+//				try {
+//					value = it.getProperty(propertyName)
+//					return true
+//				} catch (MissingPropertyException e) {
+//					exceptions << e
+//				}
+//				return false
+//			}
+//			if (exceptions) {
+//				throw new FirstResponderMissingPropertyException(propertyName, FirstResponder, exceptions)
+//			}
+//			return value
+//		}
+//
+//		void setProperty(String propertyName, Object newValue) {
+//			List exceptions = []
+//			responders.find {
+//				try {
+//					it[propertyName] = newValue
+//					return true
+//				} catch (MissingPropertyException e) {
+//					exceptions << e
+//				}
+//				return false
+//			}
+//			if (exceptions) {
+//				throw new FirstResponderMissingPropertyException(propertyName, FirstResponder, exceptions)
+//			}
+//		}
+//	}
+//
+//	private static class FirstResponderMissingMethodException extends MissingMethodException {
+//		List<MissingMethodException> causes
+//
+//		FirstResponderMissingMethodException(String method, Class type, Object[] arguments, List<MissingMethodException> causes, boolean isStatic = false) {
+//			super(method, type, arguments, isStatic)
+//			this.causes = causes
+//		}
+//
+//		@Override
+//		public String getMessage() {
+//			super.message + '\n' +
+//			'Caused by:\n'
+//			causes.collect {it.message}.join('\n')
+//		}
+//	}
+//
+//	private static class FirstResponderMissingPropertyException extends MissingPropertyException {
+//		List<MissingPropertyException> causes
+//
+//		FirstResponderMissingPropertyException(String property, Class type, List<MissingPropertyException> causes) {
+//			super(property, type)
+//			this.causes = causes
+//		}
+//
+//		@Override
+//		public String getMessage() {
+//			super.message + '\n' +
+//			'Caused by:\n'
+//			causes.collect {it.message}.join('\n')
+//		}
+//	}
 }

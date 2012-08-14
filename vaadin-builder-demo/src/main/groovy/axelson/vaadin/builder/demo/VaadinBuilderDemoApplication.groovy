@@ -34,6 +34,7 @@ class VaadinBuilderDemoApplication extends Application {
 	static final long serialVersionUID = 1L
 
 	Map samples = [
+		'tooltips': 'Tooltips',
 		'buttonPush': 'Push button',
 		'buttonDisableOnClick': 'Disable button on click',
 		'buttonLink': 'Link button',
@@ -41,6 +42,14 @@ class VaadinBuilderDemoApplication extends Application {
 		'linkCurrentWindow': 'Link',
 		'linkNoDecorations': 'Link, configure window',
 		'linkSizedWindow': 'Link, sized window',
+		'labelPlain': 'Label, plain text',
+		'labelPreformatted': 'Label, preformatted',
+		'labelRich': 'Label, rich text',
+		'imageEmbed': 'Image',
+		'flashEmbed': 'Flash',
+		'webEmbed': 'Web content',
+		'shortcutBasics': 'Shortcuts, basics',
+		'shortcutScope': 'Shortcuts, scope',
 	]
 
 	TextArea ta

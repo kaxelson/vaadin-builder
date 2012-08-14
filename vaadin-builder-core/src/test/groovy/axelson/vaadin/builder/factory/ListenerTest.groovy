@@ -14,9 +14,11 @@
  * the License.
  */
 
-package axelson.vaadin.builder
+package axelson.vaadin.builder.factory
 
 import spock.lang.Specification
+
+import axelson.vaadin.builder.VaadinBuilder;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent
 import com.vaadin.terminal.gwt.client.MouseEventDetails

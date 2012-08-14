@@ -14,9 +14,11 @@
  * the License.
  */
 
-package axelson.vaadin.builder
+package axelson.vaadin.builder.factory
 
 import spock.lang.Specification
+
+import axelson.vaadin.builder.VaadinBuilder;
 
 import com.vaadin.ui.AbstractOrderedLayout
 import com.vaadin.ui.Alignment

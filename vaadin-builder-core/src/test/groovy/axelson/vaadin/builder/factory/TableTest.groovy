@@ -14,7 +14,9 @@
  * the License.
  */
 
-package axelson.vaadin.builder
+package axelson.vaadin.builder.factory
+
+import axelson.vaadin.builder.VaadinBuilder;
 
 import com.vaadin.ui.Table
 import spock.lang.Specification

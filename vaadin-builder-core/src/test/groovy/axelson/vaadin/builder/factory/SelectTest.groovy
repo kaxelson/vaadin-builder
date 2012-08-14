@@ -14,39 +14,34 @@
  * the License.
  */
 
-package axelson.vaadin.builder
+package axelson.vaadin.builder.factory
 
 import spock.lang.Specification
 
-import com.vaadin.ui.Button
-import com.vaadin.ui.CheckBox
-import com.vaadin.ui.DateField
-import com.vaadin.ui.InlineDateField
-import com.vaadin.ui.NativeButton
-import com.vaadin.ui.PasswordField
-import com.vaadin.ui.PopupDateField
-import com.vaadin.ui.ProgressIndicator
-import com.vaadin.ui.RichTextArea
-import com.vaadin.ui.Slider
-import com.vaadin.ui.TextArea
-import com.vaadin.ui.TextField
+import axelson.vaadin.builder.VaadinBuilder;
 
-class FieldTest extends Specification {
-	def 'can create a new Field'(Class type) {
+import com.vaadin.ui.ComboBox
+import com.vaadin.ui.ListSelect
+import com.vaadin.ui.NativeSelect
+import com.vaadin.ui.OptionGroup
+import com.vaadin.ui.Select
+
+class SelectTest extends Specification {
+	def 'can create a new Select'(Class type) {
 		when:
 			def node = toCamelCase(type.simpleName)
 			def caption = "Test ${node}"
-			def f = new VaadinBuilder()."${node}"(caption: caption)
-			
+			def f = new VaadinBuilder()."${node}"(caption: caption, options: 1..5)
+
 		then:
 			f && f.class == type
 			f.caption == caption
-		
+			f.itemIds as Set == 1..5 as Set
+
 		where:
-			type << [Button, NativeButton, CheckBox, DateField, PopupDateField, InlineDateField,
-				RichTextArea, TextField, TextArea, PasswordField, ProgressIndicator, Slider]
+			type << [ListSelect, NativeSelect, OptionGroup, Select, ComboBox]
 	}
-	
+
 	private String toCamelCase(String s) {
 		if (s == null) throw new IllegalArgumentException('Cannot convert null String to camel case.')
 		if (s.size() == 0) return s

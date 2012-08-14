@@ -1,4 +1,4 @@
-package axelson.vaadin.builder.factory
+package axelson.vaadin.builder.factory.listener
 
 import spock.lang.Specification
 import axelson.vaadin.builder.factory.listener.Pluggable
