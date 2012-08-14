@@ -1,15 +1,11 @@
 apply plugin: 'war'
 apply plugin: 'jetty'
 
-//mainClassName = "HelloWorld"
-//applicationName = 'vaadin-builder-demo'
-
 dependencies {
 	compile project(':vaadin-builder-core')
 	compile project(':vaadin-builder-util')
 
 	runtime 'com.google.gwt:gwt-user:2.4.0'
-//	runtime 'org.mortbay.jetty:jetty-runner:8.1.0.RC4'
 
     testCompile 'org.codehaus.geb:geb-spock:0.7.0'
     testCompile 'org.seleniumhq.selenium:selenium-chrome-driver:2.20.0'
@@ -17,12 +13,3 @@ dependencies {
 
 //jettyRunWar.daemon = true
 [jettyRun, jettyRunWar]*.httpPort = (System.properties['jetty.httpPort'] ?: 9999) as int
-
-task copyRuntimeLibraries(type: Sync) {
-	into "$buildDir/output/lib"
-	from configurations.runtime
-}
-
-war.dependsOn copyRuntimeLibraries
-
-task stage(dependsOn: ['clean', 'war'])
