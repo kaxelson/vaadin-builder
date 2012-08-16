@@ -27,7 +27,7 @@ class ItemFactory extends AbstractFactory {
 	public Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
 		new GenericItem()
 	}
-	
+
 	@Override
 	public boolean onHandleNodeAttributes(FactoryBuilderSupport builder, Object node, Map attributes) {
 		node.itemId = attributes.remove('itemId')
@@ -70,7 +70,7 @@ class ItemFactory extends AbstractFactory {
 			itemProperties.remove(id) != null
 		}
 	}
-	
+
 	static class GenericProperty implements Property {
 		Object propertyId
 		Object value

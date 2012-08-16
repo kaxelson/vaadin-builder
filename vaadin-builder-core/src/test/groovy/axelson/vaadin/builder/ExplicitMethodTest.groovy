@@ -85,7 +85,7 @@ class ExplicitMethodTest extends Specification {
 			Window w = new VaadinBuilder().window {
 				b = button(caption: 'before') {
 					attach {
-						it.caption = 'after'
+						caption = 'after'
 					}
 				}
 			}

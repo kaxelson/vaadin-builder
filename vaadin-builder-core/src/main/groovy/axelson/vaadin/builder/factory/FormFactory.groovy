@@ -79,25 +79,3 @@ class FormFactory extends ChildDeferringFactory {
 		}
 	}
 }
-
-//@Slf4j
-//class FormFieldFactory extends AbstractFactory {
-//	@Override
-//	public Object newInstance(FactoryBuilderSupport builder, Object name, Object value, Map attributes) throws InstantiationException, IllegalAccessException {
-//		return new Field()
-//	}
-//
-//	@Override
-//	public void setChild(FactoryBuilderSupport builder, Object parent, Object child) {
-//		super.setChild(builder, parent, child)
-//		if (parent instanceof Field && child instanceof com.vaadin.ui.Field) {
-//			Field field = parent
-//			field.field = child
-//		}
-//	}
-//
-//	static class Field {
-//		String name
-//		com.vaadin.ui.Field field
-//	}
-//}

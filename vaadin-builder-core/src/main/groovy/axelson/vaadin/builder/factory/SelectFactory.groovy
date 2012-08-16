@@ -19,6 +19,7 @@ package axelson.vaadin.builder.factory
 import groovy.util.logging.Slf4j
 
 import com.vaadin.data.Container
+import com.vaadin.data.Item
 import com.vaadin.data.util.IndexedContainer
 import com.vaadin.ui.AbstractSelect
 
@@ -41,5 +42,21 @@ class SelectFactory extends FieldFactory {
 			}
 		}
 		return super.onHandleNodeAttributes(builder, node, attributes)
+	}
+
+	@Override
+	public void processNodeChildren(FactoryBuilderSupport builder, Object parent, Object node, List children) {
+		if (node instanceof AbstractSelect) {
+			AbstractSelect s = node
+			children.findAll{it instanceof Item}.each {child ->
+				if (child.hasProperty('itemId')) {
+					s.addItem(child.itemId)
+				} else {
+					s.addItem(child)
+				}
+				children.remove(child)
+			}
+		}
+		super.processNodeChildren(builder, parent, node, children)
 	}
 }

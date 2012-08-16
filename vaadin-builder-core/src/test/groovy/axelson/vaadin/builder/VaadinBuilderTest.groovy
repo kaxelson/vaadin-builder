@@ -18,23 +18,25 @@ package axelson.vaadin.builder
 
 import spock.lang.Specification
 
-import axelson.vaadin.builder.VaadinBuilder;
-
-import com.vaadin.event.ShortcutAction.KeyCode
-import com.vaadin.event.ShortcutAction.ModifierKey
 import com.vaadin.ui.Button
-import com.vaadin.ui.Panel
-import com.vaadin.ui.TextField
-import com.vaadin.ui.AbstractField.FocusShortcut
+import com.vaadin.ui.Label
 
 class VaadinBuilderTest extends Specification {
-	def 'can set current node properties within its closure'() {
+	def "can set current node properties within that node's closure"() {
 		when:
-			Button b = new VaadinBuilder().button {
-				current.caption = 'test'
+			Label l
+			Button b
+			new VaadinBuilder().verticalLayout {
+				l = label {
+					value = 'test'
+				}
+				b = button {
+					caption = 'test'
+				}
 			}
 
 		then:
+			l.value == 'test'
 			b.caption == 'test'
 	}
 }

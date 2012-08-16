@@ -17,8 +17,7 @@
 package axelson.vaadin.builder.factory
 
 import spock.lang.Specification
-
-import axelson.vaadin.builder.VaadinBuilder;
+import axelson.vaadin.builder.VaadinBuilder
 
 import com.vaadin.ui.ComboBox
 import com.vaadin.ui.ListSelect
@@ -27,11 +26,28 @@ import com.vaadin.ui.OptionGroup
 import com.vaadin.ui.Select
 
 class SelectTest extends Specification {
-	def 'can create a new Select'(Class type) {
+	def 'can create a new Select with the options attribute'(Class type) {
 		when:
 			def node = toCamelCase(type.simpleName)
 			def caption = "Test ${node}"
 			def f = new VaadinBuilder()."${node}"(caption: caption, options: 1..5)
+
+		then:
+			f && f.class == type
+			f.caption == caption
+			f.itemIds as Set == 1..5 as Set
+
+		where:
+			type << [ListSelect, NativeSelect, OptionGroup, Select, ComboBox]
+	}
+
+	def 'can create a new Select with nested items'(Class type) {
+		when:
+			def node = toCamelCase(type.simpleName)
+			def caption = "Test ${node}"
+			def f = new VaadinBuilder()."${node}"(caption: caption) {
+				(1..5).each {item(itemId: it)}
+			}
 
 		then:
 			f && f.class == type

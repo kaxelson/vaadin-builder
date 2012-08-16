@@ -16,23 +16,40 @@
 
 package axelson.vaadin.builder.util
 
+import groovy.util.logging.Slf4j
 import axelson.vaadin.builder.VaadinBuilder
 
+@Slf4j
 class NewBuilderClosure extends Closure {
     Closure wrappedClosure
+	VaadinBuilder builder
+	long timesCalled
+
+    NewBuilderClosure(VaadinBuilder builder, Closure wrappedClosure) {
+		super(null)
+
+		this.builder = builder
+
+		// Make sure we don't reuse an old builder
+		this.wrappedClosure = this.setBuilderRecursive(wrappedClosure, builder)
+	}
 
     NewBuilderClosure(Closure wrappedClosure) {
-        super(null)
-        def vb = new VaadinBuilder()
-        this.wrappedClosure = wrappedClosure.dehydrate().rehydrate(vb, vb, vb)
+		this(new VaadinBuilder(), wrappedClosure)
     }
 
     protected Object doCall(Object arguments) {
-        wrappedClosure.call(arguments)
+        def result = wrappedClosure.call(arguments)
+		timesCalled++
+		log.info "timesCalled: $timesCalled"
+		return result
     }
 
     public Object getProperty(String property) {
-        property == 'wrappedClosure' ? getWrappedClosure() : super.getProperty(property)
+		if (property == 'wrappedClosure') return getWrappedClosure()
+		if (property == 'builder') return getBuilder()
+		if (property == 'timesCalled') return getTimesCalled()
+		return super.getProperty(property)
     }
 
     private void writeObject(ObjectOutputStream stream) {
@@ -47,4 +64,15 @@ class NewBuilderClosure extends Closure {
         def vb = new VaadinBuilder()
         wrappedClosure = wrappedClosure.dehydrate().rehydrate(vb, vb, vb)
     }
+
+	private Object setBuilderRecursive(Object o, VaadinBuilder builder) {
+		if (o instanceof Closure) {
+			Closure c = o
+			return c.dehydrate().rehydrate(setBuilderRecursive(c.delegate, builder), setBuilderRecursive(c.owner, builder), setBuilderRecursive(c.thisObject, builder))
+		} else if (o instanceof VaadinBuilder) {
+			return builder
+		} else {
+			return o
+		}
+	}
 }

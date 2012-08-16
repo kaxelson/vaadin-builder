@@ -38,6 +38,7 @@ import axelson.vaadin.builder.factory.TableFactory
 import axelson.vaadin.builder.factory.WindowFactory
 import axelson.vaadin.builder.factory.listener.ListenerFactory
 import axelson.vaadin.builder.factory.listener.PluggableListeners
+import axelson.vaadin.builder.util.NewBuilderClosure
 
 import com.vaadin.event.Action
 import com.vaadin.event.ShortcutListener
@@ -191,10 +192,32 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 		super(init)
 	}
 
-//	@Override
-//	protected void setClosureDelegate(Closure closure, Object node) {
-//		closure.setDelegate(new FirstResponder(node, this))
-//	}
+	@Override
+	public Object getProperty(String property) {
+		if (getCurrent()?.hasProperty(property)) {
+			return getCurrent().metaClass.getProperty(getCurrent(), property)
+		} else {
+			return super.getProperty(property)
+		}
+	}
+
+	@Override
+	public void setProperty(String property, Object newValue) {
+		if (getCurrent()?.hasProperty(property)) {
+			getCurrent().metaClass.setProperty(getCurrent(), property, newValue)
+		} else {
+			super.setProperty(property, newValue)
+		}
+	}
+
+	@Override
+	public Object invokeMethod(String methodName, Object args) {
+		if (getCurrent()?.respondsTo(methodName, args)) {
+			return getCurrent().invokeMethod(methodName, args)
+		} else {
+			return super.invokeMethod(methodName, args)
+		}
+	}
 
 	void registerFieldFactories() {
 		registerFactory('button', BUTTON_FACTORY)
@@ -342,15 +365,22 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 			}
 		}
 		//TODO: this can be improved (and we can add detach) once the Vaadin guys expose component attachment/detachment as an event
-		registerExplicitMethod('attach') {closure ->
+		registerExplicitMethod('attach') {Closure closure ->
 			assert closure != null && closure instanceof Closure && closure.maximumNumberOfParameters == 1
 			if (current instanceof Component) {
+				// Make sure that the closure references the right builder
+				closure = new NewBuilderClosure(closure)
+
 				Component c = current
+				String n = parentName
 				c.addListener([
 					repaintRequested: {RepaintRequestEvent event ->
-						// only call the closure if the call to this listener is a result of a component attach call
+						// Only call the closure if the call to this listener is a result of a component attach call
 						if (Thread.currentThread().getStackTrace().any {it.methodName == 'attach'}) {
-							closure.call(event.paintable)
+							// Make sure we only call this one time
+							if (closure.timesCalled == 0) {
+								closure.builder."$n"(event.paintable, closure)
+							}
 						}
 					}
 				] as RepaintRequestListener)
@@ -359,96 +389,4 @@ class VaadinBuilder extends FactoryBuilderSupport implements Serializable {
 			}
 		}
 	}
-
-//	private static class FirstResponder {
-//		List responders = []
-//
-//		FirstResponder(Object... responders) {
-//			this.responders = responders
-//		}
-//
-//		Object invokeMethod(String name, Object args) {
-//			List exceptions = []
-//			Object value
-//			responders.find {
-//				try {
-//					value = it.invokeMethod(name, args)
-//					return true
-//				} catch (MissingMethodException e) {
-//					exceptions << e
-//				}
-//				return false
-//			}
-//			if (exceptions) {
-//				throw new FirstResponderMissingMethodException(name, FirstResponder, args, exceptions)
-//			}
-//			return value
-//		}
-//
-//		Object getProperty(String propertyName) {
-//			List exceptions = []
-//			Object value
-//			responders.find {
-//				try {
-//					value = it.getProperty(propertyName)
-//					return true
-//				} catch (MissingPropertyException e) {
-//					exceptions << e
-//				}
-//				return false
-//			}
-//			if (exceptions) {
-//				throw new FirstResponderMissingPropertyException(propertyName, FirstResponder, exceptions)
-//			}
-//			return value
-//		}
-//
-//		void setProperty(String propertyName, Object newValue) {
-//			List exceptions = []
-//			responders.find {
-//				try {
-//					it[propertyName] = newValue
-//					return true
-//				} catch (MissingPropertyException e) {
-//					exceptions << e
-//				}
-//				return false
-//			}
-//			if (exceptions) {
-//				throw new FirstResponderMissingPropertyException(propertyName, FirstResponder, exceptions)
-//			}
-//		}
-//	}
-//
-//	private static class FirstResponderMissingMethodException extends MissingMethodException {
-//		List<MissingMethodException> causes
-//
-//		FirstResponderMissingMethodException(String method, Class type, Object[] arguments, List<MissingMethodException> causes, boolean isStatic = false) {
-//			super(method, type, arguments, isStatic)
-//			this.causes = causes
-//		}
-//
-//		@Override
-//		public String getMessage() {
-//			super.message + '\n' +
-//			'Caused by:\n'
-//			causes.collect {it.message}.join('\n')
-//		}
-//	}
-//
-//	private static class FirstResponderMissingPropertyException extends MissingPropertyException {
-//		List<MissingPropertyException> causes
-//
-//		FirstResponderMissingPropertyException(String property, Class type, List<MissingPropertyException> causes) {
-//			super(property, type)
-//			this.causes = causes
-//		}
-//
-//		@Override
-//		public String getMessage() {
-//			super.message + '\n' +
-//			'Caused by:\n'
-//			causes.collect {it.message}.join('\n')
-//		}
-//	}
 }

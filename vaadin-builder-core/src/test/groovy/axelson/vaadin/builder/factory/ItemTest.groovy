@@ -14,13 +14,20 @@
  * the License.
  */
 
-package axelson.vaadin.builder.demo
+package axelson.vaadin.builder.factory
 
-import com.vaadin.ui.Component
+import spock.lang.Specification
+import axelson.vaadin.builder.VaadinBuilder
 
-interface ExampleProvider extends Serializable {
-	String getName()
-	String getCode()
-	String getDocumentation()
-	Component getComponent()
+import com.vaadin.data.Item
+
+class ItemTest extends Specification {
+	def 'can create a new Item'() {
+		when:
+			def i = new VaadinBuilder().item(itemId: 1)
+
+		then:
+			i && i instanceof Item
+			i.itemId == 1
+	}
 }

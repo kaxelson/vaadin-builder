@@ -22,7 +22,6 @@ import axelson.vaadin.builder.VaadinBuilder
 import com.vaadin.Application
 import com.vaadin.terminal.ClassResource
 import com.vaadin.ui.Button
-import com.vaadin.ui.Label
 import com.vaadin.ui.Panel
 import com.vaadin.ui.TextArea
 import com.vaadin.ui.UriFragmentUtility
@@ -35,6 +34,12 @@ class VaadinBuilderDemoApplication extends Application {
 
 	Map samples = [
 		'tooltips': 'Tooltips',
+		'icons': 'Icons',
+		'packageIcons': 'Runo theme icons',
+		'errors': 'Error indicator',
+		'progressIndicators': 'Progress indication',
+		'jsapi': 'JavaScript API',
+		'browserInformation': 'Browser information',
 		'buttonPush': 'Push button',
 		'buttonDisableOnClick': 'Disable button on click',
 		'buttonLink': 'Link button',
@@ -77,7 +82,7 @@ class VaadinBuilderDemoApplication extends Application {
 					}
 				}
 				verticalLayout(spacing: true, expandRatio: 1) {
-					ta = textArea(caption: 'Code', width: '100%', rows: 10, wordwrap: false, value: 'Type you builder code here or click one of the links for an example.')
+					ta = textArea(caption: 'Code', width: '100%', rows: 20, wordwrap: false, value: 'Type you builder code here or click one of the links for an example.')
 					b = button(caption: 'Render') {
 						buttonClick {
 							contoller.renderBuilderCode()
@@ -88,17 +93,6 @@ class VaadinBuilderDemoApplication extends Application {
 					}
 				}
 			}
-
-//			tabSheet {
-//				this.examples.each {example ->
-//					tab(caption: example.name) {
-//						verticalLayout(margin: true, spacing: true) {
-//							label(value: example.code)
-//							component(example.component)
-//						}
-//					}
-//				}
-//			}
 		}
 	}
 
@@ -106,7 +100,6 @@ class VaadinBuilderDemoApplication extends Application {
 		if (sample) {
 			ClassResource cr = new ClassResource("/vaadin/${sample}.groovy", this)
 			String sampleCode = cr.stream.stream.text
-			log.info 'here'
 			ta.value = sampleCode
 			renderBuilderCode()
 		}
@@ -116,11 +109,27 @@ class VaadinBuilderDemoApplication extends Application {
 		if (ta.value) {
 			p.removeAllComponents()
 			try {
-				def result = new GroovyShell().evaluate(ta.value)
+				//Need this binding so that properties that are meant to be set
+				//on the builder are not inadvertently set on the binding.
+				Binding binding = new Binding() {
+					Object getVariable(String name) {
+						throw new MissingPropertyException(name, getClass())
+					}
+
+					void setVariable(String name, Object value) {
+						throw new MissingPropertyException(name, getClass())
+					}
+				}
+
+				def result = new GroovyShell(binding).evaluate(ta.value)
 				p.addComponent(result)
 				b.componentError = null
 			} catch (Throwable t) {
-				p.addComponent(new Label(t.message))
+				String stackTrace = new StringWriter().withWriter {w ->
+					t.printStackTrace(new PrintWriter(w))
+					w.toString()
+				}
+				p.addComponent(new VaadinBuilder().textArea(value: stackTrace, width: '100%', rows: 20))
 			}
 		}
 	}
