@@ -3,3 +3,42 @@ dependencies {
 
 	testRuntime 'com.google.gwt:gwt-servlet:2.3.0'
 }
+
+jar {
+	from {
+		zipTree(configurations.compile.find {it.name.contains('vaadin-builder-util')})
+	}
+	manifest {
+		attributes 'Vaadin-Package-Version': '1', 'Implementation-Title': 'VaadinBuilder', 'Implementation-Version': version
+	}
+}
+
+task createPom << {
+	pom {
+		project {
+			name 'VaadinBuilder'
+			description 'A Groovy DSL for constructing Vaadin UIs'
+			inceptionYear '2012'
+			url 'https://github.com/kaxelson/vaadin-builder'
+
+			licenses {
+				license {
+					name 'The Apache Software License, Version 2.0'
+					url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+					distribution 'repo'
+				}
+			}
+			developers {
+				developer {
+					id 'kaxelson'
+					name 'Knute G. Axelson'
+					email 'kaxelson@gmail.com'
+					roles{ role 'Developer' }
+					timezone '-6'
+				}
+			}
+		}
+	}.writeTo("$projectDir/src/main/resources/META-INF/maven/axelson.vaadin.vaadin-builder/vaadin-builder-core/pom.xml")
+}
+
+processResources.dependsOn createPom
