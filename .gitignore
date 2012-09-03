@@ -11,3 +11,4 @@ build/
 *.iws
 out/
 rebel.xml
+pom.xml
